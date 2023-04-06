@@ -12,7 +12,7 @@ interface Props {
 
 export default function Post({ id, title, body, tags, userId }: Props) {
   return (
-    <Link href="/">
+    <Link href={`posts/${id}`}>
       <article className={styles.post}>
         <h3>{title}</h3>
         <div>
