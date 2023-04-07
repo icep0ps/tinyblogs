@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 interface Props {
   id: number;
-  userId: number;
+  userId: { id: number; firstName: String };
   title: String;
   body: String;
   tags: string[];
@@ -17,7 +17,7 @@ export default function Post({ id, title, body, tags, userId }: Props) {
         <h3>{title}</h3>
         <div>
           <p className={styles.body}>{body}</p>
-          <p>{userId}</p>
+          <p>{userId.firstName}</p>
         </div>
       </article>
     </Link>

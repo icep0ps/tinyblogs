@@ -6,12 +6,14 @@ import Comments from './Comments';
 import { PostType } from '../../../Types';
 import styles from '../../styles/Post.module.css';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
+import { useRouter } from 'next/router';
 
 interface Props {
   postWithUserId: PostType;
 }
 
 function Post({ postWithUserId }: Props) {
+  const router = useRouter();
   const { body, title, userId } = postWithUserId;
   const { id, firstName } = userId;
 
@@ -22,10 +24,7 @@ function Post({ postWithUserId }: Props) {
       </Head>
       <main className={styles.main}>
         <h1>{title}</h1>
-        <h2>
-          Written by
-          <Link href={`/profile/${id}`}> {firstName}</Link>
-        </h2>
+        <h2 onClick={() => router.push(`/profile/${id}`)}>Written by {firstName}</h2>
         <section>
           <p>{body}</p>
         </section>
@@ -49,7 +48,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 };
 
