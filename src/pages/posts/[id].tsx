@@ -1,16 +1,19 @@
 import React from 'react';
 import axios from 'axios';
 import Head from 'next/head';
+import Link from 'next/link';
+import Comments from './Comments';
 import { PostType } from '../../../Types';
-import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import styles from '../../styles/Post.module.css';
+import { GetStaticPaths, GetStaticPropsContext } from 'next';
 
 interface Props {
-  post: PostType;
+  postWithUserId: PostType;
 }
 
-function Post({ post }: Props) {
-  const { body, title, userId } = post;
+function Post({ postWithUserId }: Props) {
+  const { body, title, userId } = postWithUserId;
+  const { id, firstName } = userId;
 
   return (
     <>
@@ -19,10 +22,14 @@ function Post({ post }: Props) {
       </Head>
       <main className={styles.main}>
         <h1>{title}</h1>
-        <h2>Written by {userId}</h2>
+        <h2>
+          Written by
+          <Link href={`/profile/${id}`}> {firstName}</Link>
+        </h2>
         <section>
           <p>{body}</p>
         </section>
+        <Comments></Comments>
       </main>
     </>
   );
@@ -48,11 +55,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export async function getStaticProps(context: GetStaticPropsContext) {
   const id = context.params?.id;
+
   const post = await axios
     .get(`https://dummyjson.com/posts/${id}`)
     .then((res) => res.data);
+
+  const user = await axios
+    .get(`https://dummyjson.com/users/${post.userId}`)
+    .then((res) => res.data);
+
+  const postWithUserId = { ...post, userId: user };
+
   return {
-    props: { post },
+    props: { postWithUserId },
   };
 }
 
