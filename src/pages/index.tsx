@@ -3,12 +3,14 @@ import axios from 'axios';
 import Post from '../../components/Post';
 import styles from '../styles/Home.module.css';
 import { PostType } from '../../Types';
+import { useState } from 'react';
 
 interface Props {
   posts: { posts: PostType[] };
 }
 
 function Home({ posts }: Props) {
+  const [searchInputValue, setSearchInputValue] = useState('');
   return (
     <>
       <Head>
@@ -19,6 +21,18 @@ function Home({ posts }: Props) {
           <h1>Welcome to my blogs</h1>
           <p>This is a site i made learning Nextjs! Hope you like it.</p>
         </div>
+
+        <div>
+          <form action={`/search/${searchInputValue}`}>
+            <input
+              type="search"
+              placeholder="Search for a blog post..."
+              onChange={(e) => setSearchInputValue(e.target.value)}
+            ></input>
+            <button>Search</button>
+          </form>
+        </div>
+
         <section className={styles.section}>
           <h1>Latests Blogs</h1>
           <div className={styles.posts}>
