@@ -1,15 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import Head from 'next/head';
-import Link from 'next/link';
 import Comments from './Comments';
-import { PostType } from '../../../Types';
-import styles from '../../styles/Post.module.css';
+import { IPost } from '../../../Types';
 import { GetStaticPaths, GetStaticPropsContext } from 'next';
 import { useRouter } from 'next/router';
 
 interface Props {
-  postWithUserId: PostType;
+  postWithUserId: IPost;
 }
 
 function Post({ postWithUserId }: Props) {
@@ -22,7 +20,7 @@ function Post({ postWithUserId }: Props) {
       <Head>
         <title>{title}</title>
       </Head>
-      <main className={styles.main}>
+      <main className="">
         <h1>{title}</h1>
         <h2 onClick={() => router.push(`/profile/${id}`)}>Written by {firstName}</h2>
         <section>
@@ -38,7 +36,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const posts = await axios
     .get('https://dummyjson.com/posts', { params: { limit: 10 } })
     .then((res) => res.data);
-  const paths = posts.posts.map((post: PostType) => {
+  const paths = posts.posts.map((post: IPost) => {
     return {
       params: {
         id: `${post.id}`,

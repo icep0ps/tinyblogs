@@ -1,54 +1,38 @@
 import Head from 'next/head';
 import axios from 'axios';
-import Post from '../../components/Post';
-import styles from '../styles/Home.module.css';
-import { PostType } from '../../Types';
-import { useState } from 'react';
-
+import { IPost } from '../../Types';
+import Post from '../../components/posts/Post';
 interface Props {
-  posts: { posts: PostType[] };
+  posts: { posts: IPost[] };
 }
 
 function Home({ posts }: Props) {
-  const [searchInputValue, setSearchInputValue] = useState('');
   return (
     <>
       <Head>
         <title>Home</title>
       </Head>
-      <main className={styles.main}>
-        <div>
-          <h1>Welcome to my blogs</h1>
-          <p>This is a site i made learning Nextjs! Hope you like it.</p>
+      <section className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
+        <nav>
+          <ul className="flex gap-5">
+            <li>For you</li>
+            <li>Following</li>
+            <li>Trending</li>
+          </ul>
+        </nav>
+        <div className="">
+          {posts.posts?.map((post: IPost) => (
+            <Post
+              id={post.id}
+              key={post.id}
+              body={post.body}
+              tags={post.tags}
+              title={post.title}
+              userId={post.userId}
+            ></Post>
+          ))}
         </div>
-
-        <div>
-          <form action={`/search/${searchInputValue}`}>
-            <input
-              type="search"
-              placeholder="Search for a blog post..."
-              onChange={(e) => setSearchInputValue(e.target.value)}
-            ></input>
-            <button>Search</button>
-          </form>
-        </div>
-
-        <section className={styles.section}>
-          <h1>Latests Blogs</h1>
-          <div className={styles.posts}>
-            {posts.posts?.map((post: PostType) => (
-              <Post
-                id={post.id}
-                key={post.id}
-                body={post.body}
-                tags={post.tags}
-                title={post.title}
-                userId={post.userId}
-              ></Post>
-            ))}
-          </div>
-        </section>
-      </main>
+      </section>
     </>
   );
 }

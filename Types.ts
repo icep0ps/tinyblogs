@@ -1,4 +1,4 @@
-export type PostType = {
+export type IPost = {
   id: number;
   title: String;
   body: String;
@@ -7,7 +7,7 @@ export type PostType = {
   reactions: number;
 };
 
-export type User = {
+export type IUser = {
   id: number;
   firstName: String;
   lastName: String;

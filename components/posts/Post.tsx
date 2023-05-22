@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from '../components/post.module.css';
 import Link from 'next/link';
 
 interface Props {
@@ -13,10 +12,10 @@ interface Props {
 export default function Post({ id, title, body, tags, userId }: Props) {
   return (
     <Link href={`/posts/${id}`}>
-      <article className={styles.post}>
+      <article className="">
         <h3>{title}</h3>
         <div>
-          <p className={styles.body}>{body}</p>
+          <p className="">{body}</p>
           <p>{userId.firstName}</p>
         </div>
       </article>

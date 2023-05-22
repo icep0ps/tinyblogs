@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { PostType } from '../../../Types';
-import Post from '../../../components/Post';
+import Post from '../../../components/posts/Post';
 import { GetServerSidePropsContext } from 'next';
 var isEmpty = require('lodash.isempty');
 import styles from '../../../components/post.module.css';
@@ -12,7 +12,6 @@ interface Props {
 }
 
 function Search({ posts, searchParams }: Props) {
-  console.log(posts.posts);
   return (
     <main>
       <h1>Results for {`"${searchParams}"`}</h1>
