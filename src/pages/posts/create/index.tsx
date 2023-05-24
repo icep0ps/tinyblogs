@@ -1,28 +1,34 @@
-import React from 'react';
-
 import Editor from '../../../../components/editor/Editor';
-
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { OnChangePlugin } from '@lexical/react/LexicalOnChangePlugin';
+import React, { ReactNode, useId, useState, createElement } from 'react';
 
 type Props = {};
 
 const Create = (props: Props) => {
-  const initialConfig = {
-    namespace: 'MyEditor',
-    these: {},
-    onError: () => console.log(),
+  const id = useId();
+  const [editors, addEditor] = useState<ReactNode[]>([]);
+
+  const createEditor = () => {
+    const initialConfig = {
+      namespace: 'cover',
+      onError: () => {},
+    };
+
+    addEditor((state) => [
+      ...state,
+      <LexicalComposer initialConfig={initialConfig} key={id}>
+        {createElement(Editor)}
+      </LexicalComposer>,
+    ]);
   };
+
   return (
     <section className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-3">
-      <h1>Create a new blog!</h1>
-      <LexicalComposer initialConfig={initialConfig}>
-        <HistoryPlugin />
-        <Editor />
-        <OnChangePlugin onChange={() => console.log()} />
-      </LexicalComposer>
+      <div>
+        <h1>Create a new blog!</h1>
+        <button onClick={createEditor}>Create new slide!</button>
+      </div>
+      <div className="max-h-screen overflow-y-scroll">{editors}</div>
     </section>
   );
 };
