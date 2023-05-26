@@ -1,34 +1,15 @@
-import Editor from '../../../../components/editor/Editor';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import React, { ReactNode, useId, useState, createElement } from 'react';
+import React, { useState } from 'react';
+import Setup from '../../../../components/editor/components/Setup';
+import Creation from '../../../../components/editor/components/Creation';
+import { IStep } from '../../../../Types';
 
 type Props = {};
 
 const Create = (props: Props) => {
-  const id = useId();
-  const [editors, addEditor] = useState<ReactNode[]>([]);
-
-  const createEditor = () => {
-    const initialConfig = {
-      namespace: 'cover',
-      onError: () => {},
-    };
-
-    addEditor((state) => [
-      ...state,
-      <LexicalComposer initialConfig={initialConfig} key={id}>
-        {createElement(Editor)}
-      </LexicalComposer>,
-    ]);
-  };
-
+  const [step, setStep] = useState<IStep>('Set-up');
   return (
-    <section className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-3">
-      <div>
-        <h1>Create a new blog!</h1>
-        <button onClick={createEditor}>Create new slide!</button>
-      </div>
-      <div className="max-h-screen overflow-y-scroll">{editors}</div>
+    <section className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-3 ">
+      {step === 'Set-up' ? <Setup setStep={setStep} /> : <Creation setStep={setStep} />}
     </section>
   );
 };

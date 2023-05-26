@@ -14,3 +14,6 @@ export type IUser = {
   image: string;
   email: String;
 };
+
+export type IStep = 'Set-up' | 'Creation';
+export type ISlideType = 'cover' | 'basic';
