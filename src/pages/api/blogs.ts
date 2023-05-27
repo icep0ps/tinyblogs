@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     case 'POST':
       const { title, coverImage, languages, slides } = req.body.data;
-      console.log(req.body.data);
       try {
         const blog = await prisma.blog.create({
           data: {

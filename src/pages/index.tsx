@@ -1,7 +1,8 @@
 import Head from 'next/head';
+import { DBblog } from '../../Types';
 import { PrismaClient } from '@prisma/client';
 import Post from '../../components/posts/Post';
-import { DBblog } from '../../Types';
+
 interface Props {
   blogs: DBblog[];
 }
@@ -23,7 +24,7 @@ function Home(props: Props) {
           </ul>
         </nav>
         <div className="">
-          {blogs?.map((blog) => {
+          {blogs.map((blog) => {
             const { id } = blog;
             return <Post id={id} post={blog} key={id} />;
           })}

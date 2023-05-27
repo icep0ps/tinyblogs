@@ -1,5 +1,14 @@
-import { DBblog, Slide } from '../../Types';
+import { DBblog } from '../../Types';
 import Editor from '../editor/Editor';
+
+import { Swiper } from 'swiper/react';
+import { SwiperSlide } from 'swiper/react';
+import { Navigation, Pagination, Scrollbar, A11y, Controller } from 'swiper';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/controller';
+
 import React, { createElement } from 'react';
 import getConfig from '../editor/utils/initialConfig';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -14,17 +23,27 @@ const Post = (props: Props) => {
   const { slides } = post;
 
   return (
-    <div>
+    <Swiper
+      key={id}
+      slidesPerView={1}
+      className="relative"
+      pagination={{ clickable: true }}
+      modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
+    >
       {slides.slides.map((slide) => (
-        <LexicalComposer initialConfig={getConfig(false)} key={id}>
-          {createElement(Editor, {
-            type: slide.type,
-            number: slide.number,
-            state: slide.contents,
-          })}
-        </LexicalComposer>
+        <SwiperSlide key={id}>
+          <div className="h-full">
+            <LexicalComposer initialConfig={getConfig(false)}>
+              {createElement(Editor, {
+                type: slide.type,
+                number: slide.number,
+                state: slide.contents,
+              })}
+            </LexicalComposer>
+          </div>
+        </SwiperSlide>
       ))}
-    </div>
+    </Swiper>
   );
 };
 export default Post;

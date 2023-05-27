@@ -43,7 +43,7 @@ const Editor = (props: Props) => {
   };
 
   return (
-    <React.Fragment>
+    <div>
       {isEditable && (
         <React.Fragment>
           <Toolbar />
@@ -60,7 +60,7 @@ const Editor = (props: Props) => {
           placeholder={<span className="absolute top-0">Enter some text...</span>}
         />
       </div>
-    </React.Fragment>
+    </div>
   );
 };
 
