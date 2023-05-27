@@ -4,14 +4,19 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 
 const useGenarateNodes = (type: string) => {
   const [editor] = useLexicalComposerContext();
-  switch (type) {
-    case 'cover':
-      Cover(editor);
-      break;
-    case 'basic':
-      Basic(editor);
-      break;
+
+  function craeteSlidesContents(state: string | undefined) {
+    switch (type) {
+      case 'cover':
+        Cover(editor);
+        break;
+      case 'basic':
+        Basic(editor, state);
+        break;
+    }
   }
+
+  return [craeteSlidesContents];
 };
 
 export default useGenarateNodes;

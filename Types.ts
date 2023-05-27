@@ -15,5 +15,20 @@ export type IUser = {
   email: String;
 };
 
-export type IStep = 'Set-up' | 'Creation';
+export type IBlog = {
+  data: {
+    title: string | undefined;
+    languages: string[] | undefined;
+    coverImage: string | undefined;
+  };
+  slides: [];
+};
+
+export type Slide = {
+  type: ISlideType;
+  number: number;
+  contents: string;
+};
+
+export type IStep = 'Set-up' | 'Creation' | 'Preview';
 export type ISlideType = 'cover' | 'basic';

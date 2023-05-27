@@ -1,26 +1,29 @@
+import { Slide } from '../../../Types';
+
 class Blog {
-  static type: 'basic';
-  public slides: Basic[];
+  public created: Date;
+  // public author: { id: string; username: string },
 
   constructor(
-    private id: string,
-    public title: string,
-    public tags: string[],
-    public created: Date = new Date(),
-    public author: { id: string; username: string },
-    private metadata: { likes: number; comments: number; views: number }
+    public title: string = 'untitled',
+    public languages: string[] = [],
+    public slides: Slide[],
+    private metadata: { likes: number; comments: []; views: number } = {
+      likes: 0,
+      comments: [],
+      views: 0,
+    }
   ) {
-    this.slides = [];
+    this.created = new Date();
   }
 
-  public createSlide(title: string, contents: string) {
-    const number = this.slides.length + 1;
-    this.slides.push(new Basic(number, title, contents));
+  like() {
+    this.metadata.likes++;
   }
-}
 
-class Basic {
-  constructor(public number: number, public title: string, public contents: string) {}
+  view() {
+    this.metadata.views++;
+  }
 }
 
 export default Blog;
