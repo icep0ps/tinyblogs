@@ -1,5 +1,5 @@
+import Link from 'next/link';
 import React, { ReactNode } from 'react';
-
 type Props = {
   children: ReactNode;
 };
@@ -10,8 +10,13 @@ function Layout({ children }: Props) {
       <aside className="pt-4 max-w-md min-w-[20%]">
         <h1>Tiny blogs</h1>
         <ul>
-          <li>Home</li>
-          <li>Create blog</li>
+          <Link href="/">
+            <li>Home</li>
+          </Link>
+          <Link href="/posts/create">
+            <li>Create blog</li>
+          </Link>
+
           <li>Explore</li>
           <li>Profile</li>
           <li>search</li>

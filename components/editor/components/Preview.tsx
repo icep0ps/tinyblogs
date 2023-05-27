@@ -1,4 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import axios from 'axios';
 import Editor from '../Editor';
 import Blog from '../../common/Slides/Blog';
 import React, { createElement } from 'react';
@@ -16,11 +17,15 @@ type Props = {
 const Preview = (props: Props) => {
   const { data, slides, view, setView } = props;
 
-  const postBlog = () => {
+  const postBlog = async () => {
     if (data) {
       const { title, languages, coverImage } = data;
-      const blog = new Blog(title, languages, slides);
-      console.log(blog);
+      const blog = new Blog(title, coverImage, languages, slides);
+      await axios.post('/api/blogs', {
+        data: {
+          ...blog,
+        },
+      });
     }
   };
 

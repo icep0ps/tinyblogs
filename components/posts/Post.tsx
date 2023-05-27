@@ -1,24 +1,30 @@
-import React from 'react';
-import Link from 'next/link';
+import { DBblog, Slide } from '../../Types';
+import Editor from '../editor/Editor';
+import React, { createElement } from 'react';
+import getConfig from '../editor/utils/initialConfig';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 interface Props {
-  id: number;
-  userId: { id: number; firstName: String };
-  title: String;
-  body: String;
-  tags: string[];
+  id: string;
+  post: DBblog;
 }
 
-export default function Post({ id, title, body, tags, userId }: Props) {
+const Post = (props: Props) => {
+  const { id, post } = props;
+  const { slides } = post;
+
   return (
-    <Link href={`/posts/${id}`}>
-      <article className="">
-        <h3>{title}</h3>
-        <div>
-          <p className="">{body}</p>
-          <p>{userId.firstName}</p>
-        </div>
-      </article>
-    </Link>
+    <div>
+      {slides.slides.map((slide) => (
+        <LexicalComposer initialConfig={getConfig(false)} key={id}>
+          {createElement(Editor, {
+            type: slide.type,
+            number: slide.number,
+            state: slide.contents,
+          })}
+        </LexicalComposer>
+      ))}
+    </div>
   );
-}
+};
+export default Post;

@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Blog {
+  id         String     @id @default(uuid())
+  createdAt  DateTime   @default(now())
+  title      String     @db.VarChar(255)
+  slides     Json       @db.Json
+  languages  Language[]
+  published  Boolean    @default(false)
+  likes      Int        @default(0) @db.SmallInt
+  comments   Comment[]
+  coverImage String     @default("")
+  views      Int        @default(0) @db.SmallInt
+}
+
+model Language {
+  id     String  @unique @default(uuid())
+  name   String  @db.Char(225)
+  Blog   Blog?   @relation(fields: [blogId], references: [id])
+  blogId String?
+}
+
+model Comment {
+  id      String  @unique @default(uuid())
+  comment String  @db.LongText
+  Blog    Blog?   @relation(fields: [blogId], references: [id])
+  blogId  String?
+}

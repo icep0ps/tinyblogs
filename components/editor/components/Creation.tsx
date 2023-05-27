@@ -2,7 +2,7 @@ import Editor from '../Editor';
 import getConfig from '../utils/initialConfig';
 import { ISlideType, IStep } from '../../../Types';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import React, { ReactNode, createElement, useId, useState } from 'react';
+import React, { ReactNode, createElement, useState } from 'react';
 
 type Props = {
   view: IStep;
@@ -36,7 +36,7 @@ const Creation = (props: Props) => {
             setView('Preview');
           }}
         >
-          Post
+          Preview
         </button>
       </div>
       <div className="absolute top-5 bg-zinc-800 p-2 rounded-md z-10 " hidden={isHidden}>

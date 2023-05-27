@@ -1,12 +1,14 @@
 import Head from 'next/head';
-import axios from 'axios';
-import { IPost } from '../../Types';
+import { PrismaClient } from '@prisma/client';
 import Post from '../../components/posts/Post';
+import { DBblog } from '../../Types';
 interface Props {
-  posts: { posts: IPost[] };
+  blogs: DBblog[];
 }
 
-function Home({ posts }: Props) {
+function Home(props: Props) {
+  const { blogs } = props;
+
   return (
     <>
       <Head>
@@ -21,27 +23,29 @@ function Home({ posts }: Props) {
           </ul>
         </nav>
         <div className="">
-          {posts.posts?.map((post: IPost) => (
-            <Post
-              id={post.id}
-              key={post.id}
-              body={post.body}
-              tags={post.tags}
-              title={post.title}
-              userId={post.userId}
-            ></Post>
-          ))}
+          {blogs?.map((blog) => {
+            const { id } = blog;
+            return <Post id={id} post={blog} key={id} />;
+          })}
         </div>
       </section>
     </>
   );
 }
 
-export async function getStaticProps() {
-  const posts = await axios
-    .get('https://dummyjson.com/posts', { params: { limit: 10 } })
-    .then((res) => res.data);
-  return { props: { posts } };
-}
+export const getServerSideProps = async () => {
+  const prisma = new PrismaClient();
+  try {
+    const blogs = await prisma.blog.findMany({
+      include: {
+        languages: true,
+      },
+    });
+    return { props: { blogs: JSON.parse(JSON.stringify(blogs)) } };
+  } catch (err) {
+    console.log(`erro fetching blogs \n ${err}`);
+    return { props: {} };
+  }
+};
 
 export default Home;
