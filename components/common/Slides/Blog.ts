@@ -1,4 +1,4 @@
-import { Slide } from '../../../Types';
+import { Slide, IUser } from '../../../Types';
 
 class Blog {
   public created: Date;
@@ -7,7 +7,8 @@ class Blog {
     public title: string = 'untitled',
     public coverImage: string = '',
     public languages: string[] = [],
-    public slides: Slide[]
+    public slides: Slide[],
+    public author: IUser
   ) {
     this.created = new Date();
   }

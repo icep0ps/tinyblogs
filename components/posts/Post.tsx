@@ -23,27 +23,37 @@ const Post = (props: Props) => {
   const { slides } = post;
 
   return (
-    <Swiper
-      key={id}
-      slidesPerView={1}
-      className="relative"
-      pagination={{ clickable: true }}
-      modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
-    >
-      {slides.slides.map((slide) => (
-        <SwiperSlide key={id}>
-          <div className="h-full">
-            <LexicalComposer initialConfig={getConfig(false)}>
-              {createElement(Editor, {
-                type: slide.type,
-                number: slide.number,
-                state: slide.contents,
-              })}
-            </LexicalComposer>
-          </div>
-        </SwiperSlide>
-      ))}
-    </Swiper>
+    <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px]">
+      <div className="">{post.authorId}</div>
+      <Swiper
+        key={id}
+        slidesPerView={1}
+        className="relative w-full h-full"
+        pagination={{ clickable: true }}
+        modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
+      >
+        {slides.slides.map((slide) => (
+          <SwiperSlide key={id + slide.number}>
+            <div className="h-full">
+              <LexicalComposer initialConfig={getConfig(false)}>
+                {createElement(Editor, {
+                  type: slide.type,
+                  number: slide.number,
+                  state: slide.contents,
+                })}
+              </LexicalComposer>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+      <div>
+        <ul className="flex gap-5">
+          <li>views: {post.views}</li>
+          <li>likes: {post.likes}</li>
+          <li>comments: 0</li>
+        </ul>
+      </div>
+    </div>
   );
 };
 export default Post;

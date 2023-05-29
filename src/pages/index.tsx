@@ -23,7 +23,7 @@ function Home(props: Props) {
             <li>Trending</li>
           </ul>
         </nav>
-        <div className="">
+        <div className="flex flex-col gap-5">
           {blogs.map((blog) => {
             const { id } = blog;
             return <Post id={id} post={blog} key={id} />;

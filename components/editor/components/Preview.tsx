@@ -4,7 +4,8 @@ import Editor from '../Editor';
 import Blog from '../../common/Slides/Blog';
 import React, { createElement } from 'react';
 import getConfig from '../utils/initialConfig';
-import { IBlog, IStep, Slide } from '../../../Types';
+import { useSession } from 'next-auth/react';
+import { IBlog, IStep, IUser, Slide } from '../../../Types';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 type Props = {
@@ -16,11 +17,12 @@ type Props = {
 
 const Preview = (props: Props) => {
   const { data, slides, view, setView } = props;
+  const { data: session, status } = useSession();
 
   const postBlog = async () => {
-    if (data) {
+    if (data && session?.user) {
       const { title, languages, coverImage } = data;
-      const blog = new Blog(title, coverImage, languages, slides);
+      const blog = new Blog(title, coverImage, languages, slides, session.user as IUser);
       await axios.post('/api/blogs', {
         data: {
           ...blog,

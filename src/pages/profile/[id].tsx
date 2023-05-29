@@ -3,15 +3,15 @@ import useSWR from 'swr';
 import axios from 'axios';
 import { Fetcher } from 'swr';
 import { useRouter } from 'next/router';
-import { User } from '../../../Types';
+import { IUser } from '../../../Types';
 import Image from 'next/image';
 
 function Profile() {
   const router = useRouter();
   const { id } = router.query;
 
-  const fetcher: Fetcher<User> = (url: string) =>
-    axios.get(url).then((r): User => r.data);
+  const fetcher: Fetcher<IUser> = (url: string) =>
+    axios.get(url).then((r): IUser => r.data);
   const {
     data: user,
     error,

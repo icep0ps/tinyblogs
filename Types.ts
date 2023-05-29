@@ -8,11 +8,10 @@ export type IPost = {
 };
 
 export type IUser = {
-  id: number;
-  firstName: String;
-  lastName: String;
+  name: string;
   image: string;
-  email: String;
+  email: string;
+  posts?: DBblog[];
 };
 
 export type IBlog = {
@@ -40,6 +39,7 @@ export interface DBblog {
   coverImage: string;
   views: number;
   languages: Language[];
+  authorId: string;
 }
 
 export interface Language {
