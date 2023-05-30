@@ -8,10 +8,12 @@ datasource db {
 }
 
 model User {
-  email String @id @unique @db.Char(20)
-  name  String @db.Char(15)
-  image String @db.LongText
-  posts Blog[]
+  id      String    @id @default(uuid())
+  email   String    @unique @db.Char(225)
+  name    String    @db.Char(15)
+  image   String    @db.LongText
+  posts   Blog[]
+  Comment Comment[]
 }
 
 model Blog {
@@ -21,12 +23,12 @@ model Blog {
   slides     Json       @db.Json
   languages  Language[]
   published  Boolean    @default(false)
-  likes      Int        @default(0) @db.SmallInt
+  likes      Int        @default(0) @db.Int
   comments   Comment[]
   coverImage String     @default("")
-  views      Int        @default(0) @db.SmallInt
+  views      Int        @default(0) @db.Int
 
-  author   User   @relation(fields: [authorId], references: [email])
+  author   User   @relation(fields: [authorId], references: [id])
   authorId String
 }
 
@@ -36,8 +38,10 @@ model Language {
 }
 
 model Comment {
-  id      String @unique @default(uuid())
-  comment String @db.LongText
-  Blog    Blog   @relation(fields: [blogId], references: [id])
-  blogId  String
+  id       String @unique @default(uuid())
+  comment  String @db.LongText
+  author   User   @relation(fields: [authorId], references: [id])
+  Blog     Blog   @relation(fields: [blogId], references: [id])
+  blogId   String
+  authorId String @db.Char(20)
 }

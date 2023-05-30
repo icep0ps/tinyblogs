@@ -39,6 +39,7 @@ export const getServerSideProps = async () => {
   try {
     const blogs = await prisma.blog.findMany({
       include: {
+        author: true,
         languages: true,
       },
     });

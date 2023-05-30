@@ -26,6 +26,7 @@ export default async function hander(req: NextApiRequest, res: NextApiResponse) 
 
         return res.status(200).redirect('/');
       } catch (err) {
+        console.log(err);
         res.status(500).redirect('/api/auth/signin');
       } finally {
         prisma.$disconnect();

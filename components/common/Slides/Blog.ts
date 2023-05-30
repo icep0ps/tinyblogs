@@ -1,5 +1,5 @@
+import axios from 'axios';
 import { Slide, IUser } from '../../../Types';
-
 class Blog {
   public created: Date;
 
@@ -13,9 +13,11 @@ class Blog {
     this.created = new Date();
   }
 
-  like() {}
+  like(userId: string) {
+    axios.post;
+  }
 
-  view() {}
+  view(userId: string) {}
 }
 
 export default Blog;

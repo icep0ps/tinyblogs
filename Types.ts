@@ -8,6 +8,7 @@ export type IPost = {
 };
 
 export type IUser = {
+  id: string;
   name: string;
   image: string;
   email: string;
@@ -39,7 +40,7 @@ export interface DBblog {
   coverImage: string;
   views: number;
   languages: Language[];
-  authorId: string;
+  author: { id: string; name: string; image: string; email: string };
 }
 
 export interface Language {

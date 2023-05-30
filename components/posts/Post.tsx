@@ -1,6 +1,7 @@
 import { DBblog } from '../../Types';
 import Editor from '../editor/Editor';
 
+import Image from 'next/image';
 import { Swiper } from 'swiper/react';
 import { SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y, Controller } from 'swiper';
@@ -12,6 +13,7 @@ import 'swiper/css/controller';
 import React, { createElement } from 'react';
 import getConfig from '../editor/utils/initialConfig';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import Link from 'next/link';
 
 interface Props {
   id: string;
@@ -21,10 +23,13 @@ interface Props {
 const Post = (props: Props) => {
   const { id, post } = props;
   const { slides } = post;
-
+  const { id: authorId, name, image } = post.author;
   return (
     <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px]">
-      <div className="">{post.authorId}</div>
+      <Link href={`/profile/${authorId}`} className="flex gap-5 items-center">
+        <Image src={image} alt="pfp" height={40} width={40} className="rounded-full" />
+        <h3>{name}</h3>
+      </Link>
       <Swiper
         key={id}
         slidesPerView={1}
