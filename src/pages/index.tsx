@@ -1,3 +1,4 @@
+import React from 'react';
 import Head from 'next/head';
 import { DBblog } from '../../Types';
 import { PrismaClient } from '@prisma/client';
@@ -11,7 +12,7 @@ function Home(props: Props) {
   const { blogs } = props;
 
   return (
-    <>
+    <React.Fragment>
       <Head>
         <title>Home</title>
       </Head>
@@ -30,7 +31,7 @@ function Home(props: Props) {
           })}
         </div>
       </section>
-    </>
+    </React.Fragment>
   );
 }
 
@@ -39,6 +40,7 @@ export const getServerSideProps = async () => {
   try {
     const blogs = await prisma.blog.findMany({
       include: {
+        likes: true,
         author: true,
         languages: true,
       },

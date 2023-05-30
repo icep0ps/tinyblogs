@@ -13,8 +13,10 @@ class Blog {
     this.created = new Date();
   }
 
-  like(userId: string) {
-    axios.post;
+  async like(blogId: string, userId: string) {
+    await axios.put('/api/blogs', {
+      data: { blogId, userId },
+    });
   }
 
   view(userId: string) {}

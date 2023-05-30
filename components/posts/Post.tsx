@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { DBblog } from '../../Types';
 import Editor from '../editor/Editor';
 
@@ -19,6 +20,8 @@ interface Props {
   id: string;
   post: DBblog;
 }
+
+//TODO: you dont have acess to userId because it being genarted on the server
 
 const Post = (props: Props) => {
   const { id, post } = props;
@@ -54,7 +57,16 @@ const Post = (props: Props) => {
       <div>
         <ul className="flex gap-5">
           <li>views: {post.views}</li>
-          <li>likes: {post.likes}</li>
+          <li
+            className="cursor-pointer"
+            onClick={async () => {
+              await axios.put(`/api/blogs/${id}`, {
+                data: { blogId: id, userId: authorId },
+              });
+            }}
+          >
+            likes: {post.likes.length}
+          </li>
           <li>comments: 0</li>
         </ul>
       </div>
