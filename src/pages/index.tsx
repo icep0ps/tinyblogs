@@ -1,15 +1,22 @@
 import React from 'react';
 import Head from 'next/head';
-import { DBblog } from '../../Types';
+import { DBblog, IUser } from '../../Types';
+import useStore from '../../stores/Users';
+import { getServerSession } from 'next-auth';
 import { PrismaClient } from '@prisma/client';
 import Post from '../../components/posts/Post';
+import { GetServerSideProps } from 'next/types';
+import { Authconfig } from './api/auth/[...nextauth]';
 
 interface Props {
   blogs: DBblog[];
+  user: IUser | null;
 }
 
 function Home(props: Props) {
-  const { blogs } = props;
+  const { blogs, user } = props;
+  const addUser = useStore((state) => state.createUser);
+  addUser(user);
 
   return (
     <React.Fragment>
@@ -35,7 +42,8 @@ function Home(props: Props) {
   );
 }
 
-export const getServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  let user;
   const prisma = new PrismaClient();
   try {
     const blogs = await prisma.blog.findMany({
@@ -45,7 +53,35 @@ export const getServerSideProps = async () => {
         languages: true,
       },
     });
-    return { props: { blogs: JSON.parse(JSON.stringify(blogs)) } };
+
+    const session = await getServerSession(context.req, context.res, Authconfig);
+    if (!session?.user) {
+      user = null;
+      return {
+        props: {
+          user,
+          blogs: JSON.parse(JSON.stringify(blogs)),
+        },
+      };
+    }
+
+    user = await prisma.user.findUnique({
+      where: {
+        email: session.user.email as string,
+      },
+    });
+
+    await prisma.user.upsert({
+      where: {
+        email: session.user.email as string,
+      },
+      update: {},
+      create: {
+        ...(session.user as { email: string; name: string; image: string }),
+      },
+    });
+
+    return { props: { blogs: JSON.parse(JSON.stringify(blogs)), user } };
   } catch (err) {
     console.log(`erro fetching blogs \n ${err}`);
     return { props: {} };

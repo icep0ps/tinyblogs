@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
-import { Authconfig } from '../auth/[...nextauth]';
 import { getServerSession } from 'next-auth/next';
+import { Authconfig } from '../auth/[...nextauth]';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 const prisma = new PrismaClient();

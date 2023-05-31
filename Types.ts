@@ -36,7 +36,7 @@ export interface DBblog {
   title: string;
   slides: Slides;
   published: boolean;
-  likes: [];
+  likes: { userId: string; blogId: string }[];
   coverImage: string;
   views: number;
   languages: Language[];
