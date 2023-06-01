@@ -4,9 +4,11 @@ import { SessionProvider } from 'next-auth/react';
 import Layout from '../../components/common/Layout';
 
 export default function App({ Component, pageProps }: AppProps) {
+  console.log(pageProps, Component);
+
   return (
     <SessionProvider>
-      <Layout>
+      <Layout authuser={pageProps.authuser}>
         <Component {...pageProps} />
       </Layout>
     </SessionProvider>

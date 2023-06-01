@@ -12,6 +12,9 @@ export type IUser = {
   name: string;
   image: string;
   email: string;
+  followers: string[];
+  following: string[];
+  likes: string[];
   posts?: DBblog[];
 };
 
@@ -52,5 +55,5 @@ export interface Slides {
   slides: Slide[];
 }
 
-export type IStep = 'Set-up' | 'Creation' | 'Preview';
 export type ISlideType = 'cover' | 'basic';
+export type IStep = 'Set-up' | 'Creation' | 'Preview';

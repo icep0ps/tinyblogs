@@ -1,14 +1,26 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Link from 'next/link';
 import Image from 'next/image';
-import React, { ReactNode } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { IUser } from '../../Types';
+import useStore from '../../stores/Users';
+import { signIn, signOut } from 'next-auth/react';
+import React, { ReactNode, useCallback, useEffect } from 'react';
 
 type Props = {
+  authuser: IUser | null;
   children: ReactNode;
 };
 
-function Layout({ children }: Props) {
-  const { data: session, status } = useSession();
+function Layout(props: Props) {
+  const { children, authuser } = props;
+
+  console.log(authuser);
+
+  const removeUser = useStore((state) => state.removeUser);
+  const createUser = useStore((state) => state.createUser);
+
+  const create = useCallback(createUser, [authuser]);
+  create(authuser);
 
   return (
     <main className="flex w-9/12 my-0 mx-auto">
@@ -23,31 +35,44 @@ function Layout({ children }: Props) {
           </Link>
 
           <li>Explore</li>
-          <li>Profile</li>
+          {authuser && (
+            <Link href={`/profile/${authuser.id}`}>
+              <li>Profile</li>
+            </Link>
+          )}
+
           <li>search</li>
         </ul>
 
-        {session?.user ? (
+        {authuser ? (
           <div className="bg-zinc-800 p-2 flex justify-between">
             <div className="flex gap-2">
               <Image
-                src={session.user.image}
+                src={authuser.image}
                 alt="pfp"
                 width={50}
                 height={50}
                 className="object-cover rounded-full"
               />
               <div>
-                <h3 className="text-xl">{session.user.name}</h3>
-                <h4 className="text-sm">{session.user.email}</h4>
+                <h3 className="text-xl">{authuser.name}</h3>
+                <h4 className="text-sm">{authuser.email}</h4>
               </div>
             </div>
-            <button onClick={() => signOut()}>signout</button>
+            <button
+              onClick={async () => {
+                console.log('signout');
+                removeUser();
+                await signOut();
+              }}
+            >
+              signout
+            </button>
           </div>
         ) : (
           <button
-            onClick={() => {
-              signIn('google', { callbackUrl: 'http://localhost:3000/api/users' });
+            onClick={async () => {
+              await signIn('google', { callbackUrl: 'http://localhost:3000/api/users' });
             }}
           >
             signIn

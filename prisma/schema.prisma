@@ -8,13 +8,15 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  email    String    @unique @db.Char(225)
-  name     String    @db.Char(15)
-  image    String    @db.LongText
-  posts    Blog[]
-  comments Comment[]
-  likes    Like[]
+  id                  String      @id @default(uuid())
+  email               String      @unique @db.Char(225)
+  name                String      @db.Char(15)
+  image               String      @db.LongText
+  posts               Blog[]
+  comments            Comment[]
+  followers_following Followers[]
+
+  likes Like[]
 }
 
 model Blog {
@@ -54,4 +56,12 @@ model Like {
   userId String
 
   @@id([userId, blogId])
+}
+
+model Followers {
+  followingId String
+  followerId  String
+  follower    User   @relation(fields: [followerId], references: [id])
+
+  @@id([followerId, followingId])
 }

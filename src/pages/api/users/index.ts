@@ -18,6 +18,9 @@ export default async function hander(req: NextApiRequest, res: NextApiResponse) 
           where: {
             email: session.user.email as string,
           },
+          include: {
+            likes: true,
+          },
           update: {},
           create: {
             ...(session.user as { email: string; name: string; image: string }),
