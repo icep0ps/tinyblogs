@@ -11,7 +11,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/controller';
 
-import React, { createElement, useState } from 'react';
+import React, { createElement, useId, useState } from 'react';
 import getConfig from '../editor/utils/initialConfig';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ interface Props {
 const Post = (props: Props) => {
   const { id, post } = props;
   const { slides } = post;
+  const langsId = useId();
 
   const user = useStore((state) => state.user);
   const { id: authorId, name, image } = post.author;
@@ -34,7 +35,7 @@ const Post = (props: Props) => {
   const Like = async () => {
     if (user?.id) {
       likes.some((like) => like.userId === user.id)
-        ? setLikes((state) => state.slice(0, state.length - 2))
+        ? setLikes((state) => state.filter((postuser) => postuser.userId !== user.id))
         : setLikes((state) => state.concat({ blogId: id, userId: user.id }));
 
       try {
@@ -46,11 +47,20 @@ const Post = (props: Props) => {
   };
 
   return (
-    <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px]">
-      <Link href={`/profile/${authorId}`} className="flex gap-5 items-center">
-        <Image src={image} alt="pfp" height={40} width={40} className="rounded-full" />
-        <h3>{name}</h3>
-      </Link>
+    <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px] h-full">
+      <div className="flex justify-between">
+        <Link href={`/profile/${authorId}`} className="flex gap-5 items-center">
+          <Image src={image} alt="pfp" height={40} width={40} className="rounded-full" />
+          <h3>{name}</h3>
+        </Link>
+
+        <ul className="flex gap-5">
+          {post.languages.map((language) => {
+            return <li key={langsId}>{language.name}</li>;
+          })}
+        </ul>
+      </div>
+
       <Swiper
         key={id}
         slidesPerView={1}
@@ -58,8 +68,15 @@ const Post = (props: Props) => {
         pagination={{ clickable: true }}
         modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
       >
+        <SwiperSlide key={id}>
+          <div className="h-full ">
+            <h1 className="text-4xl font-bold mt-10 mb-5">{post.title}</h1>
+            <Image src={''} alt="cover" height={100} width={100} className="rounded-lg" />
+          </div>
+        </SwiperSlide>
+
         {slides.slides.map((slide) => (
-          <SwiperSlide key={id + slide.number}>
+          <SwiperSlide key={id + slide.number} className="h-full">
             <div className="h-full">
               <LexicalComposer initialConfig={getConfig(false)}>
                 {createElement(Editor, {

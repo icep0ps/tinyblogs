@@ -1,13 +1,14 @@
 import React from 'react';
 import axios from 'axios';
 import Image from 'next/image';
-import { IUser } from '../../../Types';
+import { DBblog, IUser } from '../../../Types';
 import useStore from '../../../stores/Users';
+import { getServerSession } from 'next-auth';
 import { PrismaClient } from '@prisma/client';
+import { Authconfig } from '../api/auth/[...nextauth]';
 import getAuthedUser from '../../../utils/getAuthedUser';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { getServerSession } from 'next-auth';
-import { Authconfig } from '../api/auth/[...nextauth]';
+import Post from '../../../components/posts/Post';
 
 type Props = {
   user: IUser;
@@ -15,12 +16,13 @@ type Props = {
 
 function Profile(props: Props) {
   const { user: userProfile } = props;
-  const { email, followers, following, id, image, name } = userProfile;
+  const { email, followers, following, id, image, name, posts } = userProfile;
+  const postsdata = posts?.data;
 
   const user = useStore((state) => state.user);
 
   return (
-    <main>
+    <main className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
       <div className="flex gap-5 items-center">
         <div>
           <Image
@@ -52,11 +54,25 @@ function Profile(props: Props) {
           </div>
           <p>{email}</p>
 
-          <div className="flex justify-between">
+          <div className="flex gap-5">
             <span>followers: {followers}</span>
             <span>following: {following}</span>
           </div>
         </div>
+      </div>
+
+      <div className="flex flex-col gap-5 pt-10">
+        {postsdata?.map((post: DBblog) => {
+          return (
+            <div className="collapse bg-base-200 rounded-lg" key={post.id}>
+              <input type="checkbox" />
+              <div className="collapse-title text-xl font-medium">{post.title}</div>
+              <div className="collapse-content">
+                <Post id={post.id} post={post} />
+              </div>
+            </div>
+          );
+        })}
       </div>
     </main>
   );
@@ -78,6 +94,9 @@ export const getServerSideProps: GetServerSideProps = async (
       },
       include: {
         likes: true,
+        posts: {
+          include: { author: true, languages: true, likes: true },
+        },
       },
     });
 
@@ -106,6 +125,7 @@ export const getServerSideProps: GetServerSideProps = async (
             ...user,
             following: following._count.followerId,
             followers: followers._count.followingId,
+            posts: { data: JSON.parse(JSON.stringify(user.posts)) },
           },
           authuser,
         },
