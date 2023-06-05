@@ -69,9 +69,15 @@ const Post = (props: Props) => {
         modules={[Navigation, Pagination, Scrollbar, A11y, Controller]}
       >
         <SwiperSlide key={id}>
-          <div className="h-full ">
+          <div className="h-full flex flex-col gap-10">
             <h1 className="text-4xl font-bold mt-10 mb-5">{post.title}</h1>
-            <Image src={''} alt="cover" height={100} width={100} className="rounded-lg" />
+            <Image
+              src={post.coverImage}
+              alt="cover"
+              height={500}
+              width={500}
+              className="rounded-lg w-full"
+            />
           </div>
         </SwiperSlide>
 
@@ -103,8 +109,9 @@ const Post = (props: Props) => {
               </label>
             </li>
           )}
-
-          <li>comments: 0</li>
+          <Link href={`/posts/${post.id}`}>
+            <li>comments: {post.comments.length}</li>
+          </Link>
         </ul>
       </div>
     </div>

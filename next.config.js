@@ -19,7 +19,14 @@ const nextConfig = {
         protocol: 'http',
         hostname: 'localhost',
       },
+      {
+        protocol: 'https',
+        hostname: 'uploadthing.com',
+      },
     ],
+  },
+  experimental: {
+    esmExternals: false,
   },
 };
 

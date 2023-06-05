@@ -51,6 +51,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         likes: true,
         author: true,
         languages: true,
+        comments: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 

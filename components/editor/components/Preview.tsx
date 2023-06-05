@@ -16,8 +16,8 @@ type Props = {
 };
 
 const Preview = (props: Props) => {
+  const { data: session } = useSession();
   const { data, slides, view, setView } = props;
-  const { data: session, status } = useSession();
 
   const postBlog = async () => {
     if (data && session?.user) {

@@ -1,12 +1,3 @@
-export type IPost = {
-  id: number;
-  title: String;
-  body: String;
-  userId: { id: number; firstName: String };
-  tags: string[];
-  reactions: number;
-};
-
 export type IUser = {
   id: string;
   name: string;
@@ -43,6 +34,7 @@ export interface DBblog {
   coverImage: string;
   views: number;
   languages: Language[];
+  comments: IComment[];
   author: { id: string; name: string; image: string; email: string };
 }
 
@@ -50,6 +42,14 @@ export interface Language {
   name: string;
   blogId: string;
 }
+
+export type IComment = {
+  id: string;
+  comment: string;
+  author: DBblog['author'];
+  blogId: string;
+  authorId: string;
+};
 
 export interface Slides {
   slides: Slide[];

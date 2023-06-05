@@ -46,7 +46,7 @@ model Comment {
   author   User   @relation(fields: [authorId], references: [id])
   Blog     Blog   @relation(fields: [blogId], references: [id])
   blogId   String
-  authorId String @db.Char(20)
+  authorId String @db.Char(255)
 }
 
 model Like {

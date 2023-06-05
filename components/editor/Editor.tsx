@@ -16,7 +16,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 type Props = {
   state?: string;
   number: number;
-  type: ISlideType;
+  type?: ISlideType;
   isEditable?: boolean;
   addSlide?: React.Dispatch<React.SetStateAction<Map<any, any>>>;
 };
@@ -56,7 +56,7 @@ const Editor = (props: Props) => {
       <div className="relative">
         <RichTextPlugin
           ErrorBoundary={LexicalErrorBoundary}
-          contentEditable={<ContentEditable className="min-h-[300px] h-full p-2" />}
+          contentEditable={<ContentEditable className="p-2 outline-none border-none" />}
           placeholder={<span className="absolute top-0">Enter some text...</span>}
         />
       </div>

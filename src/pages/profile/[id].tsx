@@ -95,7 +95,7 @@ export const getServerSideProps: GetServerSideProps = async (
       include: {
         likes: true,
         posts: {
-          include: { author: true, languages: true, likes: true },
+          include: { author: true, languages: true, likes: true, comments: true },
         },
       },
     });

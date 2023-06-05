@@ -9,7 +9,7 @@ function getConfig(isEditable: boolean, state?: string) {
   return {
     namespace: 'cover',
     editable: isEditable,
-    editorState: defualtState,
+    editorState: state ? state : defualtState,
     theme: {
       heading: {
         h1: 'text-3xl font-bold my-4',

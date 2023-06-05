@@ -1,5 +1,8 @@
+import '@uploadthing/react/styles.css';
 import { IBlog, IStep } from '../../../Types';
 import React, { useRef, useState } from 'react';
+import { UploadButton } from '@uploadthing/react';
+import type { OurFileRouter } from '../../../server/uploadthing';
 
 type Props = {
   view: IStep;
@@ -17,7 +20,7 @@ const Setup = (props: Props) => {
       const formData = new FormData(form.current);
       const data: IBlog['data'] = {
         title: undefined,
-        coverImage: undefined,
+        coverImage: image,
         languages: undefined,
       };
       //@ts-ignore
@@ -28,22 +31,13 @@ const Setup = (props: Props) => {
           });
         } else {
           Object.assign(data, {
-            [key]: value instanceof File ? URL.createObjectURL(value) : value,
+            [key]: value,
           });
         }
       }
       setBlog(data);
     }
     setView('Creation');
-  };
-
-  const insertImg = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target;
-    if (input.files) {
-      const file = input.files[0];
-      const src = URL.createObjectURL(file);
-      setImage(src);
-    }
   };
 
   return (
@@ -56,11 +50,18 @@ const Setup = (props: Props) => {
             className="w-full h-96 bg-cover bg-center"
             style={{ backgroundImage: `url("${image}")` }}
           >
-            <input
-              type="file"
-              accept="image/jpeg, .png"
-              onChange={insertImg}
-              name="coverImage"
+            <UploadButton<OurFileRouter>
+              endpoint="imageUploader"
+              onClientUploadComplete={(res) => {
+                if (res) {
+                  const img = res.pop();
+                  if (img) setImage(img.fileUrl);
+                }
+                alert('Upload Completed');
+              }}
+              onUploadError={(error: Error) => {
+                alert(`ERROR! ${error.message}`);
+              }}
             />
           </div>
           <textarea

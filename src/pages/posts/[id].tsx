@@ -1,71 +1,75 @@
 import React from 'react';
-import axios from 'axios';
 import Head from 'next/head';
 import Comments from './Comments';
-import { IPost } from '../../../Types';
-import { GetStaticPaths, GetStaticPropsContext } from 'next';
-import { useRouter } from 'next/router';
+import { DBblog } from '../../../Types';
+import { GetServerSideProps } from 'next';
+import { getServerSession } from 'next-auth';
+import { PrismaClient } from '@prisma/client';
+import Post from '../../../components/posts/Post';
+import { Authconfig } from '../api/auth/[...nextauth]';
+import getAuthedUser from '../../../utils/getAuthedUser';
 
 interface Props {
-  postWithUserId: IPost;
+  blog: DBblog;
 }
 
-function Post({ postWithUserId }: Props) {
-  const router = useRouter();
-  const { body, title, userId } = postWithUserId;
-  const { id, firstName } = userId;
-
+function PostPage(props: Props) {
+  const { blog } = props;
+  const { id, title, comments } = blog;
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
-      <main className="">
-        <h1>{title}</h1>
-        <h2 onClick={() => router.push(`/profile/${id}`)}>Written by {firstName}</h2>
-        <section>
-          <p>{body}</p>
-        </section>
-        <Comments></Comments>
+      <main className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
+        <Post post={blog} id={id} />
+        <Comments postId={id} comments={comments}></Comments>
       </main>
     </>
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  const posts = await axios
-    .get('https://dummyjson.com/posts', { params: { limit: 10 } })
-    .then((res) => res.data);
-  const paths = posts.posts.map((post: IPost) => {
-    return {
-      params: {
-        id: `${post.id}`,
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const prisma = new PrismaClient();
+  try {
+    const blog = await prisma.blog.findUnique({
+      where: {
+        id: context.query.id as string,
       },
-    };
-  });
+      include: {
+        likes: true,
+        author: true,
+        languages: true,
+        comments: {
+          include: {
+            author: true,
+          },
+        },
+      },
+    });
 
-  return {
-    paths,
-    fallback: true,
-  };
+    if (!blog) {
+      return {
+        notFound: true,
+      };
+    }
+
+    const session = await getServerSession(context.req, context.res, Authconfig);
+    let user = await getAuthedUser(session);
+    if (!session?.user) {
+      return {
+        props: {
+          user,
+          blog: JSON.parse(JSON.stringify(blog)),
+        },
+      };
+    }
+
+    return { props: { blog: JSON.parse(JSON.stringify(blog)), authuser: user } };
+  } catch (err) {
+    console.log(`erro fetching blogs \n ${err}`);
+    return { props: {} };
+  }
 };
 
-export async function getStaticProps(context: GetStaticPropsContext) {
-  const id = context.params?.id;
-
-  const post = await axios
-    .get(`https://dummyjson.com/posts/${id}`)
-    .then((res) => res.data);
-
-  const user = await axios
-    .get(`https://dummyjson.com/users/${post.userId}`)
-    .then((res) => res.data);
-
-  const postWithUserId = { ...post, userId: user };
-
-  return {
-    props: { postWithUserId },
-  };
-}
-
-export default Post;
+export default PostPage;
