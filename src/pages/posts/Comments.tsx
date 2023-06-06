@@ -49,7 +49,13 @@ function Comments(props: Props) {
         )}
       </div>
       {comments.map((comment) => (
-        <Comment key={comment.id} author={comment.author} state={comment.comment} />
+        <Comment
+          key={comment.id}
+          id={comment.id}
+          author={comment.author}
+          state={comment.comment}
+          blogId={postId}
+        />
       ))}
     </section>
   );

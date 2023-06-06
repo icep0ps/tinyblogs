@@ -32,6 +32,12 @@ const Post = (props: Props) => {
 
   const [likes, setLikes] = useState(post.likes);
 
+  const deletePost = async () => {
+    await axios.delete(`/api/blogs/${id}`, {
+      data: { blogId: id, userId: user?.id },
+    });
+  };
+
   const Like = async () => {
     if (user?.id) {
       likes.some((like) => like.userId === user.id)
@@ -113,6 +119,8 @@ const Post = (props: Props) => {
             <li>comments: {post.comments.length}</li>
           </Link>
         </ul>
+
+        {user?.id === authorId && <button onClick={deletePost}>Delete</button>}
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ type Data = {
 
 export default async function hander(req: NextApiRequest, res: NextApiResponse<Data>) {
   const postId = `${req.query.id}`;
-  console.log(req.body.data);
+
   const { author, comment } = req.body.data;
 
   switch (req.method) {

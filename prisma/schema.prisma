@@ -31,7 +31,7 @@ model Blog {
   coverImage String     @default("")
   views      Int        @default(0) @db.Int
 
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   authorId String
 }
 
@@ -43,16 +43,16 @@ model Language {
 model Comment {
   id       String @unique @default(uuid())
   comment  String @db.LongText
-  author   User   @relation(fields: [authorId], references: [id])
-  Blog     Blog   @relation(fields: [blogId], references: [id])
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  Blog     Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId   String
   authorId String @db.Char(255)
 }
 
 model Like {
-  blog   Blog   @relation(fields: [blogId], references: [id])
+  blog   Blog   @relation(fields: [blogId], references: [id], onDelete: Cascade)
   blogId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   @@id([userId, blogId])
@@ -61,7 +61,7 @@ model Like {
 model Followers {
   followingId String
   followerId  String
-  follower    User   @relation(fields: [followerId], references: [id])
+  follower    User   @relation(fields: [followerId], references: [id], onDelete: Cascade)
 
   @@id([followerId, followingId])
 }
