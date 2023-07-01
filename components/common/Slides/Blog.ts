@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Slide, IUser } from '../../../Types';
+import { User } from '@prisma/client';
+import { Slide } from '../../../Types';
 class Blog {
   public created: Date;
 
@@ -8,7 +9,7 @@ class Blog {
     public coverImage: string = '',
     public languages: string[] = [],
     public slides: Slide[],
-    public author: IUser
+    public author: User
   ) {
     this.created = new Date();
   }

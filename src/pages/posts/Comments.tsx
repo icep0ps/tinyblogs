@@ -1,39 +1,41 @@
-import axios from 'axios';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import { IComment } from '../../../Types';
-import useStore from '../../../stores/Users';
+import { trpc } from '../../../utils/trpc';
 import Editor from '../../../components/editor/Editor';
 import Comment from '../../../components/posts/Comment';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import getConfig from '../../../components/editor/utils/initialConfig';
 
+import Image from 'next/image';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import React, { FC, Fragment, useState } from 'react';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+
 type Props = {
-  postId: string;
-  comments: IComment[];
+  blogId: string;
+  comments: (Comment & {
+    author: User;
+  })[];
 };
 
-function Comments(props: Props) {
-  const { comments, postId } = props;
-  const user = useStore((state) => state.user);
-  const [slides, addSlide] = useState(new Map());
+const Comments: FC<Props> = (props) => {
+  const { data } = useSession();
+  const utils = trpc.useContext();
+  const postComment = trpc.blogs.comments.post.useMutation({
+    async onSuccess() {
+      await utils.blogs.getById.invalidate(blogId);
+    },
+  });
 
-  async function postComment() {
-    await axios.put(`/api/blogs/${postId}/comments`, {
-      data: {
-        author: user,
-        comment: slides.get(1).contents,
-      },
-    });
-  }
+  const user = data?.user;
+  const { comments, blogId } = props;
+  const [slides, addSlide] = useState(new Map());
 
   return (
     <section className="flex flex-col gap-5">
       <div className="flex gap-5 items-start">
         {user && (
-          <>
+          <Fragment>
             <Image
-              src={user.image}
+              src={user.image ?? ''}
               alt="pfp"
               height={40}
               width={40}
@@ -44,21 +46,28 @@ function Comments(props: Props) {
                 <Editor isEditable addSlide={addSlide} number={1} />
               </LexicalComposer>
             </div>
-            <button onClick={postComment}>Post</button>
-          </>
+            <button
+              onClick={() =>
+                postComment.mutate({ blogId, comment: slides.get(1).contents })
+              }
+            >
+              Post
+            </button>
+          </Fragment>
         )}
       </div>
-      {comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          id={comment.id}
-          author={comment.author}
-          state={comment.comment}
-          blogId={postId}
-        />
-      ))}
+
+      {comments ? (
+        comments.map((comment) => (
+          <Comment key={comment.id} comment={comment} blogId={blogId} />
+        ))
+      ) : (
+        <div>
+          <h1>no comments </h1>
+        </div>
+      )}
     </section>
   );
-}
+};
 
 export default Comments;

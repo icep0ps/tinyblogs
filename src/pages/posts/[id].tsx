@@ -1,75 +1,46 @@
-import React from 'react';
-import Head from 'next/head';
 import Comments from './Comments';
-import { DBblog } from '../../../Types';
-import { GetServerSideProps } from 'next';
-import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
+import { trpc } from '../../../utils/trpc';
 import Post from '../../../components/posts/Post';
-import { Authconfig } from '../api/auth/[...nextauth]';
-import getAuthedUser from '../../../utils/getAuthedUser';
+
+import Head from 'next/head';
+import { NextPage } from 'next';
+import React, { Fragment } from 'react';
+import { NextRouter, withRouter } from 'next/router';
 
 interface Props {
-  blog: DBblog;
+  router: NextRouter;
 }
 
-function PostPage(props: Props) {
-  const { blog } = props;
-  const { id, title, comments } = blog;
-  return (
-    <>
-      <Head>
-        <title>{title}</title>
-      </Head>
-      <main className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
-        <Post post={blog} id={id} />
-        <Comments postId={id} comments={comments}></Comments>
-      </main>
-    </>
-  );
-}
+const PostPage: NextPage<Props> = (props) => {
+  const { router } = props;
+  const blogId = router.query.id as string;
+  const { data: blog, isLoading } = trpc.blogs.getById.useQuery(blogId);
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
-  try {
-    const blog = await prisma.blog.findUnique({
-      where: {
-        id: context.query.id as string,
-      },
-      include: {
-        likes: true,
-        author: true,
-        languages: true,
-        comments: {
-          include: {
-            author: true,
-          },
-        },
-      },
-    });
+  if (isLoading) return <h1>Loading..</h1>;
 
-    if (!blog) {
-      return {
-        notFound: true,
-      };
-    }
+  if (blog) {
+    const { id, title, comments } = blog;
 
-    const session = await getServerSession(context.req, context.res, Authconfig);
-    let user = await getAuthedUser(session);
-    if (!session?.user) {
-      return {
-        props: {
-          user,
-          blog: JSON.parse(JSON.stringify(blog)),
-        },
-      };
-    }
-
-    return { props: { blog: JSON.parse(JSON.stringify(blog)), authuser: user } };
-  } catch (err) {
-    console.log(`erro fetching blogs \n ${err}`);
-    return { props: {} };
+    return (
+      <Fragment key={id}>
+        <Head>
+          <title>{title}</title>
+        </Head>
+        <main className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
+          <Post post={blog} id={id} />
+          <Comments blogId={blogId} comments={comments}></Comments>
+        </main>
+      </Fragment>
+    );
+  } else {
+    return (
+      <Fragment>
+        <main className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-8">
+          <h1>Could not load post</h1>
+        </main>
+      </Fragment>
+    );
   }
 };
 
-export default PostPage;
+export default withRouter(PostPage);

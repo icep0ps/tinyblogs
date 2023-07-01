@@ -1,26 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Link from 'next/link';
 import Image from 'next/image';
-import { IUser } from '../../Types';
-import useStore from '../../stores/Users';
-import { signIn, signOut } from 'next-auth/react';
-import React, { ReactNode, useCallback, useEffect } from 'react';
+import React, { ReactNode } from 'react';
+import { Session } from 'next-auth/core/types';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 type Props = {
-  authuser: IUser | null;
   children: ReactNode;
 };
 
 function Layout(props: Props) {
-  const { children, authuser } = props;
+  const { children } = props;
+  const { data, status } = useSession();
+  const user = data?.user;
 
-  console.log(authuser);
-
-  const removeUser = useStore((state) => state.removeUser);
-  const createUser = useStore((state) => state.createUser);
-
-  const create = useCallback(createUser, [authuser]);
-  create(authuser);
+  if (status === 'loading') return <h1>Loading...</h1>;
 
   return (
     <main className="flex w-9/12 my-0 mx-auto">
@@ -35,8 +29,8 @@ function Layout(props: Props) {
           </Link>
 
           <li>Explore</li>
-          {authuser && (
-            <Link href={`/profile/${authuser.id}`}>
+          {user && (
+            <Link href={`/profile/${user.id}`}>
               <li>Profile</li>
             </Link>
           )}
@@ -44,30 +38,22 @@ function Layout(props: Props) {
           <li>search</li>
         </ul>
 
-        {authuser ? (
+        {user ? (
           <div className="bg-zinc-800 p-2 flex justify-between">
             <div className="flex gap-2">
               <Image
-                src={authuser.image}
+                src={user.image ?? ''}
                 alt="pfp"
                 width={50}
                 height={50}
                 className="object-cover rounded-full"
               />
               <div>
-                <h3 className="text-xl">{authuser.name}</h3>
-                <h4 className="text-sm">{authuser.email}</h4>
+                <h3 className="text-xl">{user.name}</h3>
+                <h4 className="text-sm">{user.email}</h4>
               </div>
             </div>
-            <button
-              onClick={async () => {
-                console.log('signout');
-                removeUser();
-                await signOut();
-              }}
-            >
-              signout
-            </button>
+            <button onClick={async () => await signOut()}>signout</button>
           </div>
         ) : (
           <button

@@ -1,28 +1,25 @@
-import '@uploadthing/react/styles.css';
-import { IBlog, IStep } from '../../../Types';
-import React, { useRef, useState } from 'react';
-import { UploadButton } from '@uploadthing/react';
+import { BlogSetupData, Step } from '../../../Types';
 import type { OurFileRouter } from '../../../server/uploadthing';
 
-type Props = {
-  view: IStep;
-  setView: React.Dispatch<React.SetStateAction<IStep>>;
-  setBlog: React.Dispatch<React.SetStateAction<IBlog['data'] | undefined>>;
-};
+import '@uploadthing/react/styles.css';
+import { UploadButton } from '@uploadthing/react';
+import React, { FC, useRef, useState } from 'react';
 
-const Setup = (props: Props) => {
+interface Props {
+  view: Step;
+  data: BlogSetupData;
+  setView: React.Dispatch<React.SetStateAction<Step>>;
+  setBlog: React.Dispatch<React.SetStateAction<BlogSetupData>>;
+}
+
+const Setup: FC<Props> = (props) => {
   const [image, setImage] = useState('');
-  const { view, setView, setBlog } = props;
+  const { view, data, setView, setBlog } = props;
   const form = useRef<HTMLFormElement | null>(null);
 
   const setFromData = () => {
     if (form.current) {
       const formData = new FormData(form.current);
-      const data: IBlog['data'] = {
-        title: undefined,
-        coverImage: image,
-        languages: undefined,
-      };
       //@ts-ignore
       for (var [key, value] of formData) {
         if (key === 'languages') {

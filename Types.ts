@@ -1,59 +1,52 @@
-export type IUser = {
-  id: string;
-  name: string;
-  image: string;
-  email: string;
-  followers: string[];
-  following: string[];
-  likes: string[];
-  posts?: DBblog[];
-};
+import { z } from 'zod';
+import { Blog as PBlog, User as PUser, Comment, Like, Language } from '@prisma/client';
+import { DefaultSession, DefaultUser } from 'next-auth';
 
-export type IBlog = {
-  data: {
-    title: string | undefined;
-    languages: string[] | undefined;
-    coverImage: string | undefined;
-  };
-  slides: Slide[];
-};
+declare module 'next-auth' {
+  interface User {
+    id: string;
+  }
 
-export type Slide = {
-  type: ISlideType;
-  number: number;
-  contents: string;
-};
-
-export interface DBblog {
-  id: string;
-  createdAt: Date;
-  title: string;
-  slides: Slides;
-  published: boolean;
-  likes: { userId: string; blogId: string }[];
-  coverImage: string;
-  views: number;
-  languages: Language[];
-  comments: IComment[];
-  author: { id: string; name: string; image: string; email: string };
+  interface Session extends DefaultSession {
+    user?: User;
+  }
 }
 
-export interface Language {
-  name: string;
-  blogId: string;
-}
+export type SlideType = 'cover' | 'basic';
+export type Step = 'Set-up' | 'Creation' | 'Preview';
 
-export type IComment = {
-  id: string;
-  comment: string;
-  author: DBblog['author'];
-  blogId: string;
-  authorId: string;
+export type User = PUser & {
+  likes?: string[];
+  posts?: Blog[];
+  followers?: string[];
+  following?: string[];
 };
 
-export interface Slides {
-  slides: Slide[];
-}
+export type Blog = PBlog & {
+  likes?: Like[];
+  comments?: Comment[];
+  languages?: Language[];
+  author?: string | PUser;
+};
 
-export type ISlideType = 'cover' | 'basic';
-export type IStep = 'Set-up' | 'Creation' | 'Preview';
+export const blogSetupData = z.object({
+  title: z.string().default('untitled'),
+  languages: z.string().array(),
+  coverImage: z.string().optional(),
+});
+
+export const slide = z.object({
+  type: z.string(),
+  number: z.number(),
+  contents: z.string(),
+});
+
+const authedUser = z.object({
+  name: z.string(),
+  email: z.string(),
+  image: z.string(),
+});
+
+export type Slide = z.infer<typeof slide>;
+export type AuthedUser = z.infer<typeof authedUser>;
+export type BlogSetupData = z.infer<typeof blogSetupData>;

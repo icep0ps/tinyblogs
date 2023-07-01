@@ -1,5 +1,5 @@
 import { getServerSession } from 'next-auth';
-import getAuthedUser from '../utils/getAuthedUser';
+import getAuthedUser from '../../utils/getAuthedUser';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Authconfig } from '@/pages/api/auth/[...nextauth]';
 import { createUploadthing, type FileRouter } from 'uploadthing/next-legacy';

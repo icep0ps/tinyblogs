@@ -1,42 +1,60 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Image from 'next/image';
 import Editor from '../editor/Editor';
-import { DBblog } from '../../Types';
+import { Comment } from '@prisma/client';
 import getConfig from '../editor/utils/initialConfig';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import useStore from '../../stores/Users';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { User } from 'next-auth';
+import { trpc } from '../../utils/trpc';
 
 type Props = {
-  id: string;
-  state: string;
   blogId: string;
-  author: DBblog['author'];
+  comment: Comment & {
+    author: User;
+  };
 };
 
-function Comment(props: Props) {
-  const { state, author, blogId, id } = props;
-  const user = useStore((state) => state.user);
+const Comment: FC<Props> = (props) => {
+  const utils = trpc.useContext();
+  const { comment, blogId } = props;
+  const { authorId, id } = comment;
+  const { data } = useSession();
+  const user = data?.user;
 
-  const deleteComment = async () => {
-    await axios.delete(`/api/blogs/${blogId}/comments/${id}`);
-  };
+  const deleteComment = trpc.blogs.comments.delete.useMutation({
+    async onSuccess() {
+      await utils.blogs.getById.invalidate(blogId);
+    },
+  });
 
   return (
     <div className="flex items-start">
       <Image
-        src={author.image}
+        src={comment.author.image ?? ''}
         height={40}
         width={40}
         alt="pfp"
         className="rounded-full"
       />
-      <LexicalComposer initialConfig={getConfig(false, state)}>
+      <LexicalComposer initialConfig={getConfig(false, comment.comment)}>
         <Editor number={1} />
       </LexicalComposer>
-      {user?.id === author.id && <button onClick={deleteComment}>Delete</button>}
+      {user?.id === authorId && (
+        <button
+          onClick={() =>
+            deleteComment.mutate({
+              blogId,
+              commentId: id,
+            })
+          }
+        >
+          Delete
+        </button>
+      )}
     </div>
   );
-}
+};
 
 export default Comment;

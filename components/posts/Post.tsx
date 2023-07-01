@@ -1,56 +1,44 @@
-import axios from 'axios';
-import { DBblog } from '../../Types';
 import Editor from '../editor/Editor';
+import { trpc } from '../../utils/trpc';
+import getConfig from '../editor/utils/initialConfig';
 
+import Link from 'next/link';
 import Image from 'next/image';
 import { Swiper } from 'swiper/react';
 import { SwiperSlide } from 'swiper/react';
+import { useSession } from 'next-auth/react';
+import { BlogsRouter } from '@/server/routes/blogs';
+import type { inferRouterOutputs } from '@trpc/server';
+import React, { Fragment, createElement, useId, useState } from 'react';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { Navigation, Pagination, Scrollbar, A11y, Controller } from 'swiper';
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/controller';
 
-import React, { createElement, useId, useState } from 'react';
-import getConfig from '../editor/utils/initialConfig';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import Link from 'next/link';
-import useStore from '../../stores/Users';
+type RouterOutput = inferRouterOutputs<BlogsRouter>;
 
 interface Props {
   id: string;
-  post: DBblog;
+  post: RouterOutput['getAll'][0];
 }
 
 const Post = (props: Props) => {
-  const { id, post } = props;
-  const { slides } = post;
   const langsId = useId();
+  const { id, post } = props;
+  const { slides, author, comments, likes: likesdata, languages, coverImage } = post;
+  const [likes, setLikes] = useState(likesdata);
+  const { id: authorId, name, image } = author;
 
-  const user = useStore((state) => state.user);
-  const { id: authorId, name, image } = post.author;
-
-  const [likes, setLikes] = useState(post.likes);
-
-  const deletePost = async () => {
-    await axios.delete(`/api/blogs/${id}`, {
-      data: { blogId: id, userId: user?.id },
-    });
-  };
-
-  const Like = async () => {
-    if (user?.id) {
-      likes.some((like) => like.userId === user.id)
-        ? setLikes((state) => state.filter((postuser) => postuser.userId !== user.id))
-        : setLikes((state) => state.concat({ blogId: id, userId: user.id }));
-
-      try {
-        await axios.put(`/api/blogs/${id}`, {
-          data: { blogId: id, userId: user.id },
-        });
-      } catch (err) {}
-    }
-  };
+  const { data } = useSession();
+  const user = data?.user;
+  const deletePost = trpc.blogs.delete.useMutation();
+  const like = trpc.blogs.like.useMutation({
+    onSuccess(data) {
+      if (data) setLikes(data.likes);
+    },
+  });
 
   return (
     <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px] h-full">
@@ -61,7 +49,7 @@ const Post = (props: Props) => {
         </Link>
 
         <ul className="flex gap-5">
-          {post.languages.map((language) => {
+          {languages.map((language) => {
             return <li key={langsId}>{language.name}</li>;
           })}
         </ul>
@@ -78,7 +66,7 @@ const Post = (props: Props) => {
           <div className="h-full flex flex-col gap-10">
             <h1 className="text-4xl font-bold mt-10 mb-5">{post.title}</h1>
             <Image
-              src={post.coverImage}
+              src={coverImage ?? ''}
               alt="cover"
               height={500}
               width={500}
@@ -87,7 +75,7 @@ const Post = (props: Props) => {
           </div>
         </SwiperSlide>
 
-        {slides.slides.map((slide) => (
+        {slides?.slides.map((slide) => (
           <SwiperSlide key={id + slide.number} className="h-full">
             <div className="h-full">
               <LexicalComposer initialConfig={getConfig(false)}>
@@ -105,22 +93,28 @@ const Post = (props: Props) => {
         <ul className="flex gap-5">
           <li>views: {post.views}</li>
           {user ? (
-            <li className="cursor-pointer" onClick={Like}>
-              likes: {likes.length}
-            </li>
+            <Fragment>
+              <li
+                className="cursor-pointer"
+                onClick={() => like.mutate({ blogId: post.id })}
+              >
+                likes: {likes.length}
+              </li>
+              {user.id === authorId && (
+                <button onClick={() => deletePost.mutate({ blogId: id })}>Delete</button>
+              )}
+            </Fragment>
           ) : (
-            <li onClick={Like}>
+            <li>
               <label htmlFor="my-modal" className="cursor-pointer">
-                likes: {post.likes.length}
+                likes: {likes.length}
               </label>
             </li>
           )}
-          <Link href={`/posts/${post.id}`}>
-            <li>comments: {post.comments.length}</li>
+          <Link href={`/posts/${id}`}>
+            <li>comments: {comments.length}</li>
           </Link>
         </ul>
-
-        {user?.id === authorId && <button onClick={deletePost}>Delete</button>}
       </div>
     </div>
   );

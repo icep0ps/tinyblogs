@@ -1,23 +1,16 @@
+import { trpc } from '../../utils/trpc';
+import Post from '../../components/posts/Post';
+
 import React from 'react';
 import Head from 'next/head';
-import { DBblog, IUser } from '../../Types';
-import useStore from '../../stores/Users';
-import { getServerSession } from 'next-auth';
-import { PrismaClient } from '@prisma/client';
-import Post from '../../components/posts/Post';
-import { GetServerSideProps } from 'next/types';
-import getAuthedUser from '../../utils/getAuthedUser';
-import { Authconfig } from './api/auth/[...nextauth]';
+import { NextPage } from 'next/types';
 
-interface Props {
-  blogs: DBblog[];
-  authuser: IUser | null;
-}
+interface Props {}
 
-function Home(props: Props) {
-  const { blogs, authuser } = props;
-  const addUser = useStore((state) => state.createUser);
-  addUser(authuser);
+const Home: NextPage<Props> = (props) => {
+  const { data: blogs, isLoading } = trpc.blogs.getAll.useQuery();
+
+  if (isLoading) return <h1>Loading...</h1>;
 
   return (
     <React.Fragment>
@@ -33,47 +26,18 @@ function Home(props: Props) {
           </ul>
         </nav>
         <div className="flex flex-col gap-5">
-          {blogs.map((blog) => {
-            const { id } = blog;
-            return <Post id={id} post={blog} key={id} />;
-          })}
+          {blogs ? (
+            blogs.map((blog) => {
+              const { id } = blog;
+              return <Post id={id} post={blog} key={id} />;
+            })
+          ) : (
+            <h1>No blogs found</h1>
+          )}
         </div>
       </section>
     </React.Fragment>
   );
-}
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const prisma = new PrismaClient();
-  try {
-    const blogs = await prisma.blog.findMany({
-      include: {
-        likes: true,
-        author: true,
-        languages: true,
-        comments: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    const session = await getServerSession(context.req, context.res, Authconfig);
-    let user = await getAuthedUser(session);
-    if (!session?.user) {
-      return {
-        props: {
-          user,
-          blogs: JSON.parse(JSON.stringify(blogs)),
-        },
-      };
-    }
-
-    return { props: { blogs: JSON.parse(JSON.stringify(blogs)), authuser: user } };
-  } catch (err) {
-    console.log(`erro fetching blogs \n ${err}`);
-    return { props: {} };
-  }
 };
 
 export default Home;
