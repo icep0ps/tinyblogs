@@ -1,13 +1,13 @@
-import React, { FC } from 'react';
-import Image from 'next/image';
 import Editor from '../editor/Editor';
-import { Comment } from '@prisma/client';
-import getConfig from '../editor/utils/initialConfig';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import axios from 'axios';
-import { useSession } from 'next-auth/react';
-import { User } from 'next-auth';
 import { trpc } from '../../utils/trpc';
+import getConfig from '../editor/utils/initialConfig';
+
+import Image from 'next/image';
+import React, { FC } from 'react';
+import { User } from 'next-auth';
+import { Comment } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 type Props = {
   blogId: string;

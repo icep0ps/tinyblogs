@@ -2,7 +2,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { ReactNode } from 'react';
-import { Session } from 'next-auth/core/types';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
 type Props = {
@@ -58,7 +57,7 @@ function Layout(props: Props) {
         ) : (
           <button
             onClick={async () => {
-              await signIn('google', { callbackUrl: 'http://localhost:3000/api/users' });
+              await signIn('google', { callbackUrl: 'http://localhost:3000/' });
             }}
           >
             signIn

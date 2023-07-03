@@ -16,21 +16,31 @@ export const Authconfig: AuthOptions = {
   ],
   callbacks: {
     async jwt({ token }) {
-      if (token.email) {
-        const userId = await prisma.user.findUnique({
+      if (token.email && token.name && token.picture) {
+        const { name, email, picture } = token;
+        const user = await prisma.user.upsert({
           where: {
-            email: token.email,
+            email,
           },
-          select: {
-            id: true,
+          include: {
+            likes: true,
+          },
+          update: {},
+          create: {
+            name,
+            email,
+            image: picture,
           },
         });
-        if (userId) token.id = userId.id;
+
+        //add a token id
+        if (user) token.id = user.id;
       }
       return token;
     },
     session({ session, token }) {
-      if (session.user) session.user.id = token.id;
+      // add token id from jwt as a session user id
+      if (session.user) session.user.id = token.id as string;
       return session;
     },
   },
