@@ -36,7 +36,7 @@ export const blogSetupData = z.object({
 });
 
 export const slide = z.object({
-  type: z.string(),
+  type: z.literal('cover').or(z.literal('basic')),
   number: z.number(),
   contents: z.string(),
 });

@@ -1,5 +1,5 @@
 import { BlogSetupData, Step } from '../../../Types';
-import type { OurFileRouter } from '../../../server/uploadthing';
+import type { OurFileRouter } from '../../../src/server/uploadthing';
 
 import '@uploadthing/react/styles.css';
 import { UploadButton } from '@uploadthing/react';

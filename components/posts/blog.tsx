@@ -1,5 +1,6 @@
 import Editor from '../editor/Editor';
 import { trpc } from '../../utils/trpc';
+import { Slide } from '../../Types';
 import getConfig from '../editor/utils/initialConfig';
 
 import Link from 'next/link';
@@ -27,9 +28,19 @@ interface Props {
 const Blog = (props: Props) => {
   const langsId = useId();
   const { id, post } = props;
-  const { slides, author, comments, likes: likesdata, languages, coverImage } = post;
+  const {
+    slides: JSONSlides,
+    author,
+    comments,
+    likes: likesdata,
+    languages,
+    coverImage,
+  } = post;
   const [likes, setLikes] = useState(likesdata);
   const { id: authorId, name, image } = author;
+
+  // hacky stuff because prisma doesnt allow arrays
+  const slides = { slides: JSONSlides } as { slides: Slide[] };
 
   const { data } = useSession();
   const user = data?.user;
@@ -74,7 +85,6 @@ const Blog = (props: Props) => {
             />
           </div>
         </SwiperSlide>
-
         {slides?.slides.map((slide) => (
           <SwiperSlide key={id + slide.number} className="h-full">
             <div className="h-full">

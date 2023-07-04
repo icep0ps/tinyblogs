@@ -1,7 +1,7 @@
 import Basic from '../../../common/Slides/Basic';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
-const useGenarateNodes = (type: string) => {
+const useGenarateNodes = (type: string | undefined) => {
   const [editor] = useLexicalComposerContext();
 
   function craeteSlidesContents(state: string | undefined) {

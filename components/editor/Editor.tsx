@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import { EditorState } from 'lexical';
-import { ISlideType } from '../../Types';
+import { SlideType } from '../../Types';
 import Toolbar from './Plugins/Toolbar/Toolbar';
 import { registerCodeHighlighting } from '@lexical/code';
 import { MaxLengthPlugin } from './Plugins/MaxLengthPlugin';
@@ -16,7 +16,7 @@ import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext
 type Props = {
   state?: string;
   number: number;
-  type?: ISlideType;
+  type?: SlideType;
   isEditable?: boolean;
   addSlide?: React.Dispatch<React.SetStateAction<Map<any, any>>>;
 };

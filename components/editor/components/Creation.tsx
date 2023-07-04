@@ -1,12 +1,12 @@
 import Editor from '../Editor';
 import getConfig from '../utils/initialConfig';
-import { ISlideType, IStep } from '../../../Types';
+import { SlideType, Step } from '../../../Types';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import React, { ReactNode, createElement, useState } from 'react';
 
 type Props = {
-  view: IStep;
-  setView: React.Dispatch<React.SetStateAction<IStep>>;
+  view: Step;
+  setView: React.Dispatch<React.SetStateAction<Step>>;
   setSlides: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
@@ -16,7 +16,7 @@ const Creation = (props: Props) => {
   const [isHidden, setIsHidden] = useState(true);
   const [editors, addEditor] = useState<ReactNode[]>([]);
 
-  const createEditor = (type: ISlideType) => {
+  const createEditor = (type: SlideType) => {
     addEditor((state) => [
       ...state,
       <LexicalComposer initialConfig={getConfig(true)} key={editors.length + 1}>
