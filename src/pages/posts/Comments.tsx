@@ -1,6 +1,6 @@
 import { trpc } from '../../../utils/trpc';
 import Editor from '../../../components/editor/Editor';
-
+import CommentComponent from '../../../components/posts/comment';
 import getConfig from '../../../components/editor/utils/initialConfig';
 
 import Image from 'next/image';
@@ -8,7 +8,6 @@ import { User } from 'next-auth';
 import { useSession } from 'next-auth/react';
 import React, { FC, Fragment, useState } from 'react';
 import type { Comment } from '@prisma/client';
-import CommentComponent from '../../../components/posts/comment';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 type Props = {
   blogId: string;

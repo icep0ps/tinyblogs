@@ -16,7 +16,7 @@ type Props = {
   };
 };
 
-const Comment: FC<Props> = (props) => {
+const CommentComponent: FC<Props> = (props) => {
   const utils = trpc.useContext();
   const { data } = useSession();
   const user = data?.user;
@@ -58,4 +58,4 @@ const Comment: FC<Props> = (props) => {
   );
 };
 
-export default Comment;
+export default CommentComponent;
