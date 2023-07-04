@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import { PostType } from '../../../Types';
-import Post from '../../../components/posts/Post';
+import Post from '../../../components/posts/blog';
 import { GetServerSidePropsContext } from 'next';
 var isEmpty = require('lodash.isempty');
 import styles from '../../../components/post.module.css';

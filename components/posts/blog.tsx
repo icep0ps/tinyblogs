@@ -24,7 +24,7 @@ interface Props {
   post: RouterOutput['getAll'][0];
 }
 
-const Post = (props: Props) => {
+const Blog = (props: Props) => {
   const langsId = useId();
   const { id, post } = props;
   const { slides, author, comments, likes: likesdata, languages, coverImage } = post;
@@ -119,4 +119,4 @@ const Post = (props: Props) => {
     </div>
   );
 };
-export default Post;
+export default Blog;

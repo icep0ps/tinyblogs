@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { Blog as PBlog, User as PUser, Comment, Like, Language } from '@prisma/client';
-import { DefaultSession, DefaultUser } from 'next-auth';
+import { DefaultSession } from 'next-auth';
 
 declare module 'next-auth' {
   interface User {

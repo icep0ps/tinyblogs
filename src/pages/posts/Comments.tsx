@@ -1,6 +1,6 @@
 import { trpc } from '../../../utils/trpc';
 import Editor from '../../../components/editor/Editor';
-import Comment from '../../../components/posts/Comment';
+import Comment from '../../../components/posts/comment';
 import getConfig from '../../../components/editor/utils/initialConfig';
 
 import Image from 'next/image';

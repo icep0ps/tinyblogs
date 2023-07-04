@@ -1,5 +1,5 @@
 import { trpc } from '../../../utils/trpc';
-import Post from '../../../components/posts/Post';
+import Blog from '../../../components/posts/blog';
 
 import React from 'react';
 import Image from 'next/image';
@@ -7,6 +7,12 @@ import type { NextPage } from 'next';
 import { withRouter } from 'next/router';
 import type { NextRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 type Props = {
   router: NextRouter;
@@ -77,18 +83,23 @@ const Profile: NextPage<Props> = (props) => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-5 pt-10">
-        {posts.map((post) => {
-          return (
-            <div className="collapse bg-base-200 rounded-lg" key={post.id}>
-              <input type="checkbox" />
-              <div className="collapse-title text-xl font-medium">{post.title}</div>
-              <div className="collapse-content">
-                <Post id={post.id} post={post} />
-              </div>
-            </div>
-          );
-        })}
+      <div className="flex flex-col gap-5 pt-10 overflow-y-scroll">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">Posts</h3>
+        <div>
+          {posts.map((post) => {
+            const { id, title } = post;
+            return (
+              <Accordion type="single" collapsible className="w-full " key={id}>
+                <AccordionItem value="item-1">
+                  <AccordionTrigger>{title}</AccordionTrigger>
+                  <AccordionContent>
+                    <Blog id={id} post={post} />
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            );
+          })}
+        </div>
       </div>
     </main>
   );

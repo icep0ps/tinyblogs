@@ -18,10 +18,11 @@ type Props = {
 
 const Comment: FC<Props> = (props) => {
   const utils = trpc.useContext();
-  const { comment, blogId } = props;
-  const { authorId, id } = comment;
   const { data } = useSession();
   const user = data?.user;
+
+  const { comment, blogId } = props;
+  const { authorId, id } = comment;
 
   const deleteComment = trpc.blogs.comments.delete.useMutation({
     async onSuccess() {

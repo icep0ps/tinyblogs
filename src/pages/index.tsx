@@ -1,9 +1,10 @@
 import { trpc } from '../../utils/trpc';
-import Post from '../../components/posts/Post';
+import Blogs from '../../components/posts/blogs';
 
 import React from 'react';
 import Head from 'next/head';
 import { NextPage } from 'next/types';
+import { Separator } from '@/components/ui/separator';
 
 interface Props {}
 
@@ -21,20 +22,14 @@ const Home: NextPage<Props> = (props) => {
         <nav>
           <ul className="flex gap-5">
             <li>For you</li>
+            <Separator orientation="vertical" className="h-full" />
             <li>Following</li>
+            <Separator orientation="vertical" className="h-full w-1" />
             <li>Trending</li>
           </ul>
         </nav>
-        <div className="flex flex-col gap-5">
-          {blogs ? (
-            blogs.map((blog) => {
-              const { id } = blog;
-              return <Post id={id} post={blog} key={id} />;
-            })
-          ) : (
-            <h1>No blogs found</h1>
-          )}
-        </div>
+        <Separator className="w-1/2" />
+        <Blogs blogs={blogs} />
       </section>
     </React.Fragment>
   );
