@@ -5,7 +5,7 @@ const nextConfig = {
   headers() {
     return [
       {
-        source: '/api/trpc/blogs.getAll',
+        source: '/api/trpc/[trpc]',
         headers: [
           {
             key: 'Cache-Control',
