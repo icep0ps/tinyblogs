@@ -10,11 +10,5 @@ export const nextApiHandler = createNextApiHandler({
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=130');
-
-  if (req.method === 'OPTIONS') {
-    res.writeHead(200);
-    return res.end();
-  }
-
   return nextApiHandler(req, res);
 }
