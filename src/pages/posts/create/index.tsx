@@ -1,20 +1,21 @@
+import { NextPage } from 'next';
+import dynamic from 'next/dynamic';
 import React, { useState } from 'react';
-import { getServerSession } from 'next-auth';
-import { GetServerSidePropsContext, NextPage } from 'next';
+import { useSession } from 'next-auth/react';
 
-import getAuthedUser from '../../../../utils/getAuthedUser';
-import { Authconfig } from '@/pages/api/auth/[...nextauth]';
-import Setup from '../../../../components/editor/components/Setup';
-import Preview from '../../../../components/editor/components/Preview';
-import { Step, User, Slide, BlogSetupData } from '../../../../Types';
-import Creation from '../../../../components/editor/components/Creation';
+import { Step, Slide, BlogSetupData } from '../../../../Types';
+const Creation = dynamic(
+  () => import('../../../../components/editor/components/Creation')
+);
+const Preview = dynamic(() => import('../../../../components/editor/components/Preview'));
+const Setup = dynamic(() => import('../../../../components/editor/components/Setup'));
 
-interface Props {
-  authuser: User | null;
-}
+interface Props {}
 
 const Create: NextPage<Props> = (props) => {
-  const { authuser } = props;
+  const { data: session } = useSession();
+  const user = session?.user;
+
   const [view, setview] = useState<Step>('Set-up');
   const [data, setData] = useState<BlogSetupData>({
     title: 'untitled',
@@ -23,7 +24,7 @@ const Create: NextPage<Props> = (props) => {
   });
   const [slides, setSlides] = useState<Slide[]>([]);
 
-  if (authuser) {
+  if (user) {
     return (
       <section className="flex flex-col gap-3 w-3/6 my-0 mx-auto pt-3 ">
         <Setup view={view} setView={setview} setBlog={setData} data={data} />
@@ -34,18 +35,6 @@ const Create: NextPage<Props> = (props) => {
   } else {
     return <h1>Please signin to create a blog</h1>;
   }
-};
-
-export const getServerSideProps = async (context: GetServerSidePropsContext) => {
-  const { req, res } = context;
-  const session = await getServerSession(req, res, Authconfig);
-  const user = await getAuthedUser(session);
-
-  return {
-    props: {
-      authuser: user,
-    },
-  };
 };
 
 export default Create;

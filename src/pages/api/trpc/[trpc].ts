@@ -1,14 +1,21 @@
 import { createContext } from '../../../server/context';
 import { appRouter } from '../../../server/routes/_app';
-import { NextApiRequest, NextApiResponse } from 'next/types';
 import { createNextApiHandler } from '@trpc/server/adapters/next';
 
-export const nextApiHandler = createNextApiHandler({
+export default createNextApiHandler({
   router: appRouter,
   createContext,
+  responseMeta(opts) {
+    const { errors, type } = opts;
+    const allOk = errors.length === 0;
+    const isQuery = type === 'query';
+    if (allOk && isQuery) {
+      return {
+        headers: {
+          'Cache-control': 's-maxage=86400, stale-while-revalidate=100',
+        },
+      };
+    }
+    return {};
+  },
 });
-
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.setHeader('Cache-Control', 's-maxage=86400, stale-while-revalidate=130');
-  return nextApiHandler(req, res);
-}

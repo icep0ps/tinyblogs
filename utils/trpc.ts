@@ -21,7 +21,7 @@ function getBaseUrl() {
   return `http://localhost:${process.env.PORT ?? 3000}`;
 }
 
-export const trpc = createTRPCNext<AppRouter>({
+const trpc = createTRPCNext<AppRouter>({
   config(opts) {
     return {
       queryClientConfig: {
@@ -54,3 +54,5 @@ export const trpc = createTRPCNext<AppRouter>({
    **/
   ssr: false,
 });
+
+export default trpc;

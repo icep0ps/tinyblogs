@@ -1,4 +1,5 @@
-import Blog from './blog';
+import dynamic from 'next/dynamic';
+const Blog = dynamic(() => import('./blog'));
 
 import React, { FC } from 'react';
 import { inferRouterOutputs } from '@trpc/server';

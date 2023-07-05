@@ -1,6 +1,6 @@
-import Editor from '../editor/Editor';
-import { trpc } from '../../utils/trpc';
 import { Slide } from '../../Types';
+import trpc from '../../utils/trpc';
+import Editor from '../editor/Editor';
 import getConfig from '../editor/utils/initialConfig';
 
 import Link from 'next/link';

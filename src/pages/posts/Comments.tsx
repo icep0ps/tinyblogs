@@ -1,4 +1,4 @@
-import { trpc } from '../../../utils/trpc';
+import trpc from '../../../utils/trpc';
 import Editor from '../../../components/editor/Editor';
 import CommentComponent from '../../../components/posts/comment';
 import getConfig from '../../../components/editor/utils/initialConfig';

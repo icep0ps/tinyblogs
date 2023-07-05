@@ -1,5 +1,5 @@
 import Comments from './Comments';
-import { trpc } from '../../../utils/trpc';
+import trpc from '../../../utils/trpc';
 import Post from '../../../components/posts/blog';
 
 import Head from 'next/head';

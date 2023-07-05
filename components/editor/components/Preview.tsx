@@ -4,8 +4,8 @@ import { useSession } from 'next-auth/react';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 
 import Editor from '../Editor';
+import trpc from '../../../utils/trpc';
 import getConfig from '../utils/initialConfig';
-import { trpc } from '../../../utils/trpc';
 import { Step, Slide, BlogSetupData, AuthedUser } from '../../../Types';
 import { useRouter } from 'next/router';
 

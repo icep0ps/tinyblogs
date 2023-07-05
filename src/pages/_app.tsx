@@ -1,10 +1,9 @@
 import type { AppProps } from 'next/app';
-import { Fragment, ReactNode } from 'react';
 import { NextComponentType } from 'next/types';
-import { SessionProvider, useSession } from 'next-auth/react';
+import { SessionProvider } from 'next-auth/react';
 
 import '@/styles/globals.css';
-import { trpc } from '../../utils/trpc';
+import trpc from '../../utils/trpc';
 import Layout from '../../components/common/Layout';
 import ErrorBoundary from '../../components/common/error-boundary';
 

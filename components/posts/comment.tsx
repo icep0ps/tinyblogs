@@ -1,5 +1,5 @@
+import trpc from '../../utils/trpc';
 import Editor from '../editor/Editor';
-import { trpc } from '../../utils/trpc';
 import getConfig from '../editor/utils/initialConfig';
 
 import Image from 'next/image';

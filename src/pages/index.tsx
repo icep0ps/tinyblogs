@@ -1,4 +1,4 @@
-import { trpc } from '../../utils/trpc';
+import trpc from '../../utils/trpc';
 import Blogs from '../../components/posts/blogs';
 
 import React from 'react';
