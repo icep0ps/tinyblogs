@@ -28,19 +28,10 @@ interface Props {
 const Blog = (props: Props) => {
   const langsId = useId();
   const { id, post } = props;
-  const {
-    slides: JSONSlides,
-    author,
-    comments,
-    likes: likesdata,
-    languages,
-    coverImage,
-  } = post;
+  const { slides, author, comments, likes: likesdata, languages, coverImage } = post;
   const [likes, setLikes] = useState(likesdata);
   const { id: authorId, name, image } = author;
-
-  // hacky stuff because prisma doesnt allow arrays
-  const slides = { slides: JSONSlides } as { slides: Slide[] };
+  const slidee = slides as { slides: Slide[] };
 
   const { data } = useSession();
   const user = data?.user;
@@ -55,7 +46,13 @@ const Blog = (props: Props) => {
     <div className="bg-zinc-800 rounded-md p-3 flex flex-col min-h-[715px] h-full">
       <div className="flex justify-between">
         <Link href={`/profile/${authorId}`} className="flex gap-5 items-center">
-          <Image src={image} alt="pfp" height={40} width={40} className="rounded-full" />
+          <Image
+            src={image ?? ''}
+            alt="pfp"
+            height={40}
+            width={40}
+            className="rounded-full"
+          />
           <h3>{name}</h3>
         </Link>
 
@@ -85,7 +82,7 @@ const Blog = (props: Props) => {
             />
           </div>
         </SwiperSlide>
-        {slides?.slides.map((slide) => (
+        {slidee.slides.map((slide) => (
           <SwiperSlide key={id + slide.number} className="h-full">
             <div className="h-full">
               <LexicalComposer initialConfig={getConfig(false)}>

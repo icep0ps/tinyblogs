@@ -19,7 +19,7 @@ const Sidebar: FC<Props> = (props) => {
         <ListItem href="/">Search</ListItem>
         {user && <ListItem href={'/profile/' + user.id}>Profile</ListItem>}
       </ul>
-      {user && <Account user={user} />}
+      <Account user={user} />
     </aside>
   );
 };

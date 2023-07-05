@@ -1,7 +1,8 @@
 import { z } from 'zod';
 import { commentsRouter } from './comments';
 import { protectedProcedure, router, publicProcedure } from '../trpc';
-import { slide, blogSetupData } from '../../../Types';
+import { slide, blogSetupData, Slide } from '../../../Types';
+import { Blog, Language, Like, User } from '@prisma/client';
 
 export const blogsRouter = router({
   getAll: publicProcedure.query(async ({ ctx }) => {
@@ -35,6 +36,7 @@ export const blogsRouter = router({
         },
       },
     });
+
     return blog;
   }),
 

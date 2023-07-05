@@ -34,6 +34,7 @@ const Account: FC<Props> = (props) => {
   } else {
     return (
       <button
+        className="text-white"
         onClick={async () => {
           await signIn('google', { callbackUrl: 'http://localhost:3000/' });
         }}
