@@ -2,6 +2,10 @@ import { PrismaClient } from '@prisma/client';
 import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
+export const config = {
+  runtime: 'edge',
+};
+
 const prisma = new PrismaClient();
 
 export const Authconfig: AuthOptions = {

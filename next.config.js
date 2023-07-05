@@ -1,13 +1,19 @@
 /** @type {import('next').NextConfig} */
+
 const nextConfig = {
   reactStrictMode: true,
-  images: {
-    remotePatterns: [
+  headers() {
+    return [
       {
-        protocol: 'https',
-        hostname: 'robohash.org',
+        source: '/api/trpc/blogs.getAll',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'max-age=0, s-maxage=86400',
+          },
+        ],
       },
-    ],
+    ];
   },
   images: {
     remotePatterns: [

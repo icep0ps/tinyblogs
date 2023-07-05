@@ -24,6 +24,14 @@ function getBaseUrl() {
 export const trpc = createTRPCNext<AppRouter>({
   config(opts) {
     return {
+      queryClientConfig: {
+        defaultOptions: {
+          queries: {
+            refetchOnMount: false,
+            refetchOnWindowFocus: false,
+          },
+        },
+      },
       transformer: superjson,
       links: [
         httpBatchLink({
