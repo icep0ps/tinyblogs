@@ -43,9 +43,7 @@ export const trpc = createTRPCNext<AppRouter>({
 
           // You can pass any HTTP headers you wish here
           async headers() {
-            return {
-              'Cache-Control': 'max-age=0, s-maxage=86400, stale-while-revalidate=130',
-            };
+            return {};
           },
         }),
       ],
