@@ -12,7 +12,7 @@ export default createNextApiHandler({
     if (allOk && isQuery) {
       return {
         headers: {
-          'Cache-control': 's-maxage=86400, stale-while-revalidate=100',
+          'cache-control': 's-maxage=86400, stale-while-revalidate=100',
         },
       };
     }
