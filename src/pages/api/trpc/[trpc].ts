@@ -16,6 +16,7 @@ export default createNextApiHandler({
     return {
       headers: {
         'CDN-Cache-Control': 'public, s-max-age=3699, stale-while-revalidate=100',
+        'Cache-Control': 'no-cache',
       },
     };
   },
