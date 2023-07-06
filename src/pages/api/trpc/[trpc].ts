@@ -13,6 +13,7 @@ export default createNextApiHandler({
       return {
         headers: {
           'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=100',
+          'X-custom': 'sent headers',
         },
       };
     }
