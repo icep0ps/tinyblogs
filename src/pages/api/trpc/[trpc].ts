@@ -15,8 +15,8 @@ export default createNextApiHandler({
     const isQuery = type === 'query';
     return {
       headers: {
-        'CDN-Cache-Control': 'public, s-max-age=3699, stale-while-revalidate=100',
-        'Cache-Control': 'no-cache',
+        'CDN-Cache-Control': 'public, s-max-age=3699, stale-while-revalidate',
+        'Cache-Control': 'no-store',
       },
     };
   },
