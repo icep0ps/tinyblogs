@@ -15,7 +15,7 @@ export default createNextApiHandler({
     const isQuery = type === 'query';
     return {
       headers: {
-        'Vercel-CDN-Cache-Control': 'public, s-max-age=3699, stale-while-revalidate=100',
+        'CDN-Cache-Control': 'public, s-max-age=3699, stale-while-revalidate=100',
       },
     };
   },
