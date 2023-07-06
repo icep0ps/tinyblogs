@@ -9,14 +9,11 @@ export default createNextApiHandler({
     const { errors, type } = opts;
     const allOk = errors.length === 0;
     const isQuery = type === 'query';
-    if (allOk && isQuery) {
-      return {
-        headers: {
-          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=100',
-          'X-custom': 'sent headers',
-        },
-      };
-    }
-    return {};
+    return {
+      headers: {
+        'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=100',
+        'X-custom': 'sent headers',
+      },
+    };
   },
 });
