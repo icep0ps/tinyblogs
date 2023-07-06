@@ -12,7 +12,7 @@ export default createNextApiHandler({
     if (allOk && isQuery) {
       return {
         headers: {
-          'Vercel-CDN-Cache-Control': 's-maxage=86400, stale-while-revalidate=100',
+          'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=100',
         },
       };
     }
